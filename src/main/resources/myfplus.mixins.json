@@ -4,8 +4,13 @@
   "package": "com.hp.myfplus.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "myfplus.refmap.json",
-  "mixins": [],
-  "client": [],
+  "mixins": [
+    "SwampjawEntityMixin"
+  ],
+  "client": [
+    "client.LivingEntityRendererMixin",
+    "client.SwampjawModelAccessor"
+  ],
   "injectors": {
     "defaultRequire": 1
   }
