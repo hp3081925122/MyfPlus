@@ -21,7 +21,17 @@ public enum FxType {
     SJ_FIN(Kind.VBILL, "swampjaw/fin", 2, 6, true, 1.25f, 1.25f, 200, false),
     SJ_SLAM(Kind.DECAL, "swampjaw/slam_ring", 4, 2, false, 1.0f, 1.0f, 8, false),
     SJ_VORTEX(Kind.DECAL, "swampjaw/vortex", 4, 3, true, 1.0f, 1.0f, 100, false),
-    SJ_CHOMP(Kind.BILL, "swampjaw/chomp", 4, 2, false, 2.0f, 2.0f, 8, false);
+    SJ_CHOMP(Kind.BILL, "swampjaw/chomp", 4, 2, false, 2.0f, 2.0f, 8, false),
+    BR_NOTE(Kind.BILL, "bellringer/note", 3, 3, false, 0.75f, 0.75f, 10, true),
+    BR_PILLAR(Kind.VBILL, "bellringer/echo_pillar", 5, 2, false, 2.0f, 6.0f, 10, true),
+    BR_IMPACT(Kind.DECAL, "bellringer/impact_ring", 4, 2, false, 1.0f, 1.0f, 8, true),
+    BR_COUNT3(Kind.BILL, "bellringer/count_3", 1, 1, false, 0.9f, 0.9f, 20, true),
+    BR_COUNT2(Kind.BILL, "bellringer/count_2", 1, 1, false, 0.9f, 0.9f, 20, true),
+    BR_COUNT1(Kind.BILL, "bellringer/count_1", 1, 1, false, 0.9f, 0.9f, 20, true),
+    BR_EYES(Kind.BILL, "bellringer/eyes", 2, 2, false, 0.8f, 0.4f, 4, true),
+    BR_ECHO_BELL(Kind.VBILL, "bellringer/echo_bell", 1, 1, false, 1.5f, 1.5f, 300, true),
+    BR_ECHO_BREAK(Kind.VBILL, "bellringer/echo_bell_break", 4, 2, false, 1.5f, 1.5f, 8, true),
+    BR_GAP_MARK(Kind.DECAL, "bellringer/wave_gap_mark", 1, 1, false, 1.0f, 1.0f, 20, true);
 
     public enum Kind {
         NONE, WARN_LINE, WARN_SECTOR, WARN_CIRCLE, DECAL, DECAL_SHRINK, BILL, VBILL, ROCK_RING, ROCK_LINE, ROCK_BURST, EVENT

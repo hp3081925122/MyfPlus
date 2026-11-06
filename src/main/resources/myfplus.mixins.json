@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "myfplus.refmap.json",
   "mixins": [
+    "BellringerEntityMixin",
     "SwampjawEntityMixin"
   ],
   "client": [

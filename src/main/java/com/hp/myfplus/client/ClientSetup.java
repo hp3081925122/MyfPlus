@@ -2,6 +2,7 @@ package com.hp.myfplus.client;
 
 import com.hp.myfplus.Myfplus;
 import com.hp.myfplus.client.fx.FxEntityRenderer;
+import com.hp.myfplus.client.render.BellRenderers;
 import com.hp.myfplus.client.render.BoneHookRenderer;
 import com.hp.myfplus.client.render.GasCloudRenderer;
 import com.hp.myfplus.client.render.MudPitRenderer;
@@ -39,5 +40,9 @@ public final class ClientSetup {
         e.registerEntityRenderer(MyfEntities.MUD_GLOB.get(), SimpleSpriteRenderers.Glob::new);
         e.registerEntityRenderer(MyfEntities.SWAMP_BUBBLE.get(), SimpleSpriteRenderers.Bubble::new);
         e.registerEntityRenderer(MyfEntities.BONE_HOOK.get(), BoneHookRenderer::new);
+        e.registerEntityRenderer(MyfEntities.BELL_WAVE.get(), BellRenderers.Wave::new);
+        e.registerEntityRenderer(MyfEntities.ECHO_MARK.get(), BellRenderers.Mark::new);
+        e.registerEntityRenderer(MyfEntities.PHANTOM_BELL.get(), BellRenderers.Bell::new);
+        e.registerEntityRenderer(MyfEntities.BELL_DOME.get(), BellRenderers.Dome::new);
     }
 }

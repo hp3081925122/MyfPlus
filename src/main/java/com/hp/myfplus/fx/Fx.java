@@ -6,6 +6,7 @@ import net.minecraft.world.phys.Vec3;
 public final class Fx {
     public static final int POP_TICKS = 8;
     public static final int BOSS_SWAMPJAW = 0;
+    public static final int BOSS_BELLRINGER = 1;
 
     private Fx() {
     }

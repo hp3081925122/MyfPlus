@@ -1,7 +1,11 @@
 package com.hp.myfplus.registry;
 
 import com.hp.myfplus.Myfplus;
+import com.hp.myfplus.entity.BellDomeEntity;
+import com.hp.myfplus.entity.BellWaveEntity;
 import com.hp.myfplus.entity.BoneHookEntity;
+import com.hp.myfplus.entity.EchoMarkEntity;
+import com.hp.myfplus.entity.PhantomBellEntity;
 import com.hp.myfplus.entity.GasCloudEntity;
 import com.hp.myfplus.entity.MudGlobEntity;
 import com.hp.myfplus.entity.MudPitEntity;
@@ -24,6 +28,10 @@ public final class MyfEntities {
     public static final RegistryObject<EntityType<BoneHookEntity>> BONE_HOOK = misc("bone_hook", BoneHookEntity::new, 0.5f, 0.5f, 1);
     public static final RegistryObject<EntityType<SwampBubbleEntity>> SWAMP_BUBBLE = misc("swamp_bubble", SwampBubbleEntity::new, 0.8f, 0.8f, 2);
     public static final RegistryObject<EntityType<GasCloudEntity>> GAS_CLOUD = misc("gas_cloud", GasCloudEntity::new, 0.5f, 0.2f, 40);
+    public static final RegistryObject<EntityType<BellWaveEntity>> BELL_WAVE = misc("bell_wave", BellWaveEntity::new, 0.5f, 0.2f, 40);
+    public static final RegistryObject<EntityType<EchoMarkEntity>> ECHO_MARK = misc("echo_mark", EchoMarkEntity::new, 0.5f, 0.2f, 40);
+    public static final RegistryObject<EntityType<PhantomBellEntity>> PHANTOM_BELL = misc("phantom_bell", PhantomBellEntity::new, 2.5f, 3.0f, 40);
+    public static final RegistryObject<EntityType<BellDomeEntity>> BELL_DOME = misc("bell_dome", BellDomeEntity::new, 0.5f, 0.5f, 40);
 
     private MyfEntities() {
     }
