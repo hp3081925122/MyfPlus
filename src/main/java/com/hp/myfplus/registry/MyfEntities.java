@@ -3,7 +3,12 @@ package com.hp.myfplus.registry;
 import com.hp.myfplus.Myfplus;
 import com.hp.myfplus.entity.BellDomeEntity;
 import com.hp.myfplus.entity.BellWaveEntity;
+import com.hp.myfplus.entity.AllInEntity;
 import com.hp.myfplus.entity.BoneHookEntity;
+import com.hp.myfplus.entity.ChipEntity;
+import com.hp.myfplus.entity.DiceEntity;
+import com.hp.myfplus.entity.RouletteEntity;
+import com.hp.myfplus.entity.SlotMachineEntity;
 import com.hp.myfplus.entity.EchoMarkEntity;
 import com.hp.myfplus.entity.PhantomBellEntity;
 import com.hp.myfplus.entity.GasCloudEntity;
@@ -32,6 +37,11 @@ public final class MyfEntities {
     public static final RegistryObject<EntityType<EchoMarkEntity>> ECHO_MARK = misc("echo_mark", EchoMarkEntity::new, 0.5f, 0.2f, 40);
     public static final RegistryObject<EntityType<PhantomBellEntity>> PHANTOM_BELL = misc("phantom_bell", PhantomBellEntity::new, 2.5f, 3.0f, 40);
     public static final RegistryObject<EntityType<BellDomeEntity>> BELL_DOME = misc("bell_dome", BellDomeEntity::new, 0.5f, 0.5f, 40);
+    public static final RegistryObject<EntityType<DiceEntity>> DICE = misc("dice", DiceEntity::new, 0.6f, 0.6f, 1);
+    public static final RegistryObject<EntityType<ChipEntity>> CHIP = misc("chip", ChipEntity::new, 0.4f, 0.4f, 1);
+    public static final RegistryObject<EntityType<RouletteEntity>> ROULETTE = misc("roulette", RouletteEntity::new, 0.5f, 0.2f, 40);
+    public static final RegistryObject<EntityType<SlotMachineEntity>> SLOT_MACHINE = misc("slot_machine", SlotMachineEntity::new, 2.0f, 1.6f, 40);
+    public static final RegistryObject<EntityType<AllInEntity>> ALL_IN = misc("all_in", AllInEntity::new, 0.5f, 0.5f, 40);
 
     private MyfEntities() {
     }

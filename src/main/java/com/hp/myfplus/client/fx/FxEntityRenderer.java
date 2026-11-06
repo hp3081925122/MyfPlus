@@ -82,6 +82,15 @@ public class FxEntityRenderer extends EntityRenderer<FxEntity> {
                 int f = FxDraw.frame(t.frames, t.ticksPerFrame, t.loop, age);
                 FxDraw.billboard(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture))), entityRenderDispatcher.cameraOrientation(), t.width * e.size, t.height * e.size, f, t.frames, color, lt);
             }
+            case VBILL_DROP -> {
+                float k = Math.min(1f, age / 8f);
+                float a = Math.max(0f, Math.min(1f, (e.life - age) / 6f));
+                ps.pushPose();
+                ps.translate(0, 12f * (1 - k) * (1 - k), 0);
+                FxDraw.vbillboard(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture))), entityRenderDispatcher.camera.getYRot(), t.width * e.size, t.height * e.size,
+                        Math.floorMod(e.count, t.frames), t.frames, FxDraw.alpha(0xFFFFFF, a), lt);
+                ps.popPose();
+            }
             case VBILL -> {
                 int f = FxDraw.frame(t.frames, t.ticksPerFrame, t.loop, age);
                 FxDraw.vbillboard(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture))), entityRenderDispatcher.camera.getYRot(), t.width * e.size, t.height * e.size, f, t.frames, color, lt);

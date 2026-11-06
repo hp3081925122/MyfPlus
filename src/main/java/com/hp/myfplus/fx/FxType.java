@@ -31,10 +31,20 @@ public enum FxType {
     BR_EYES(Kind.BILL, "bellringer/eyes", 2, 2, false, 0.8f, 0.4f, 4, true),
     BR_ECHO_BELL(Kind.VBILL, "bellringer/echo_bell", 1, 1, false, 1.5f, 1.5f, 300, true),
     BR_ECHO_BREAK(Kind.VBILL, "bellringer/echo_bell_break", 4, 2, false, 1.5f, 1.5f, 8, true),
-    BR_GAP_MARK(Kind.DECAL, "bellringer/wave_gap_mark", 1, 1, false, 1.0f, 1.0f, 20, true);
+    BR_GAP_MARK(Kind.DECAL, "bellringer/wave_gap_mark", 1, 1, false, 1.0f, 1.0f, 20, true),
+    FT_BLAST(Kind.BILL, "fortuna/dice_blast", 6, 2, false, 1.0f, 1.0f, 12, true),
+    FT_CURSE(Kind.BILL, "fortuna/curse_icon", 2, 6, true, 0.5f, 0.5f, 200, true),
+    FT_STARS(Kind.BILL, "fortuna/stun_stars", 4, 3, true, 1.0f, 0.5f, 40, true),
+    FT_CARD(Kind.VBILL_DROP, "fortuna/giant_card", 5, 1, false, 2.0f, 3.0f, 80, true),
+    FT_CARD_BURST(Kind.BILL, "fortuna/card_burst", 4, 2, false, 2.5f, 2.5f, 8, true),
+    FT_COLLAPSE(Kind.BILL, "fortuna/allin_collapse", 6, 3, false, 2.0f, 3.0f, 18, true),
+    FT_CROWN(Kind.BILL, "fortuna/allin_crown", 1, 1, false, 1.0f, 1.0f, 40, true),
+    FT_BROKEN(Kind.BILL, "fortuna/allin_broken", 1, 1, false, 1.0f, 1.0f, 40, true),
+    FT_SMOKE(Kind.BILL, "fortuna/slot_smoke", 4, 3, false, 1.2f, 1.2f, 12, false),
+    FT_JACKPOT(Kind.BILL, "fortuna/jackpot", 4, 2, false, 2.5f, 2.5f, 8, true);
 
     public enum Kind {
-        NONE, WARN_LINE, WARN_SECTOR, WARN_CIRCLE, DECAL, DECAL_SHRINK, BILL, VBILL, ROCK_RING, ROCK_LINE, ROCK_BURST, EVENT
+        NONE, WARN_LINE, WARN_SECTOR, WARN_CIRCLE, DECAL, DECAL_SHRINK, BILL, VBILL, VBILL_DROP, ROCK_RING, ROCK_LINE, ROCK_BURST, EVENT
     }
 
     public final Kind kind;

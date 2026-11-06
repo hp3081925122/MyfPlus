@@ -56,6 +56,13 @@ public final class FxDraw {
         ps.popPose();
     }
 
+    public static void rect(PoseStack.Pose p, VertexConsumer vc, float x0, float y0, float x1, float y1, float z, float u0, float v0, float u1, float v1, int argb, int light) {
+        vertex(vc, p, x0, y0, z, u1, v1, argb, light);
+        vertex(vc, p, x0, y1, z, u1, v0, argb, light);
+        vertex(vc, p, x1, y1, z, u0, v0, argb, light);
+        vertex(vc, p, x1, y0, z, u0, v1, argb, light);
+    }
+
     public static void vbillboard(PoseStack ps, VertexConsumer vc, float camYaw, float w, float h, int frame, int frames, int argb, int light) {
         ps.pushPose();
         ps.mulPose(Axis.YP.rotationDegrees(-camYaw));

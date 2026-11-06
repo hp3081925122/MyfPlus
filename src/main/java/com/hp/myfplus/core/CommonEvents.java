@@ -51,6 +51,7 @@ public final class CommonEvents {
     @SubscribeEvent
     public static void onHurt(LivingHurtEvent e) {
         if (e.getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null) e.setAmount(host.myfplus$brain().onHurt(e.getSource(), e.getAmount()));
+        if (e.getSource().getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null) e.setAmount(host.myfplus$brain().onDealDamage(e.getEntity(), e.getAmount()));
     }
 
     @SubscribeEvent

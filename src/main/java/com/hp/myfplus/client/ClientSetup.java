@@ -4,6 +4,7 @@ import com.hp.myfplus.Myfplus;
 import com.hp.myfplus.client.fx.FxEntityRenderer;
 import com.hp.myfplus.client.render.BellRenderers;
 import com.hp.myfplus.client.render.BoneHookRenderer;
+import com.hp.myfplus.client.render.FortunaRenderers;
 import com.hp.myfplus.client.render.GasCloudRenderer;
 import com.hp.myfplus.client.render.MudPitRenderer;
 import com.hp.myfplus.client.render.SimpleSpriteRenderers;
@@ -44,5 +45,10 @@ public final class ClientSetup {
         e.registerEntityRenderer(MyfEntities.ECHO_MARK.get(), BellRenderers.Mark::new);
         e.registerEntityRenderer(MyfEntities.PHANTOM_BELL.get(), BellRenderers.Bell::new);
         e.registerEntityRenderer(MyfEntities.BELL_DOME.get(), BellRenderers.Dome::new);
+        e.registerEntityRenderer(MyfEntities.DICE.get(), FortunaRenderers.Dice::new);
+        e.registerEntityRenderer(MyfEntities.CHIP.get(), FortunaRenderers.Chip::new);
+        e.registerEntityRenderer(MyfEntities.ROULETTE.get(), FortunaRenderers.Roulette::new);
+        e.registerEntityRenderer(MyfEntities.SLOT_MACHINE.get(), FortunaRenderers.Slot::new);
+        e.registerEntityRenderer(MyfEntities.ALL_IN.get(), FortunaRenderers.AllIn::new);
     }
 }

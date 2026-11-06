@@ -51,6 +51,14 @@ public abstract class BossBrain<T extends Mob> {
         return amount;
     }
 
+    public float onDealDamage(LivingEntity victim, float amount) {
+        return amount;
+    }
+
+    public void hover(double x, double y, double z, double speed) {
+        boss.getMoveControl().setWantedPosition(x, y, z, speed);
+    }
+
     public void save(CompoundTag tag) {
     }
 

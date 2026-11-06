@@ -6,6 +6,7 @@
   "refmap": "myfplus.refmap.json",
   "mixins": [
     "BellringerEntityMixin",
+    "DameFortunaEntityMixin",
     "SwampjawEntityMixin"
   ],
   "client": [
