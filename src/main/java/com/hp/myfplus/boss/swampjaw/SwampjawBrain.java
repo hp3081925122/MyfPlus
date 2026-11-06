@@ -9,7 +9,9 @@ import com.hp.myfplus.config.MyfConfig;
 import com.hp.myfplus.core.BossBrain;
 import com.hp.myfplus.core.Combat;
 import com.hp.myfplus.core.GroundProbe;
+import com.hp.myfplus.core.MyfBossHost;
 import com.hp.myfplus.entity.MudPitEntity;
+import com.hp.myfplus.fx.Fx;
 import com.hp.myfplus.registry.MyfEntities;
 
 import lykrast.meetyourfight.entity.SwampjawEntity;
@@ -36,7 +38,9 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
     public final LurkSkill lurk;
     public final BubbleSkill bubble;
     public final MireSkill mire;
+    public final MaelstromSkill maelstrom;
     public final List<MudPitEntity> pits = new ArrayList<>();
+    private boolean introDone;
     @Nullable
     public Vec3 center;
     public boolean phase2;
@@ -55,6 +59,7 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
         lurk = director.add(new LurkSkill(this));
         bubble = director.add(new BubbleSkill(this));
         mire = director.add(new MireSkill(this));
+        maelstrom = director.add(new MaelstromSkill(this));
     }
 
     public void install(GoalSelector goals) {
@@ -73,6 +78,12 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
     public void serverTick() {
         if (center == null) center = boss.position();
         pits.removeIf(Entity::isRemoved);
+        int phase = phase2 ? 2 : 1;
+        if (((MyfBossHost) boss).myfplus$phase() != phase) setPhase(phase);
+        if (!introDone && target() != null) {
+            introDone = true;
+            Fx.banner(boss.level(), boss.position(), Fx.BOSS_SWAMPJAW, 1);
+        }
         if (!phase2 && !transitionQueued && hpRatio() < 0.5f) {
             transitionQueued = true;
             director.force(mire);
@@ -93,6 +104,7 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
     @Override
     public void save(CompoundTag tag) {
         tag.putBoolean("phase2", phase2);
+        tag.putBoolean("intro", introDone);
         if (center != null) {
             tag.putDouble("cx", center.x);
             tag.putDouble("cy", center.y);
@@ -103,6 +115,8 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
     @Override
     public void load(CompoundTag tag) {
         phase2 = tag.getBoolean("phase2");
+        introDone = tag.getBoolean("intro");
+        transitionQueued = phase2;
         if (tag.contains("cx")) center = new Vec3(tag.getDouble("cx"), tag.getDouble("cy"), tag.getDouble("cz"));
     }
 
@@ -130,6 +144,7 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
         boss.level().addFreshEntity(pit);
         pits.add(pit);
         boss.level().playSound(null, pos.x, pos.y, pos.z, SoundEvents.MUD_PLACE, SoundSource.HOSTILE, 1.5f, 0.8f);
+        Fx.rockBurst(boss.level(), pos, 1.2f, 5);
     }
 
     @Nullable

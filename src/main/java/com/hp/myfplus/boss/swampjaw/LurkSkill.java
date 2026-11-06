@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.hp.myfplus.core.BossSkill;
 import com.hp.myfplus.core.Combat;
 import com.hp.myfplus.entity.MudPitEntity;
+import com.hp.myfplus.fx.Fx;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
 
@@ -105,7 +106,12 @@ public class LurkSkill extends BossSkill {
                     st = 0;
                     surface();
                     FxEntity.at(fish.level(), FxType.SJ_GEYSER, strike).spawn();
+                    FxEntity.at(fish.level(), FxType.SJ_CHOMP, strike.add(0, 1.8, 0)).size(1.8f).spawn();
+                    Fx.rockBurst(fish.level(), strike, 1.6f, 14);
+                    Fx.rockRing(fish.level(), strike, 3.5f, 0.5f);
+                    Fx.shake(fish.level(), strike, 0.9f);
                     fish.playSound(SoundEvents.GENERIC_SPLASH, 3.0f, 0.5f);
+                    fish.playSound(SoundEvents.EVOKER_FANGS_ATTACK, 2.0f, 0.6f);
                     AABB box = new AABB(strike.x - 1.75, strike.y - 0.5, strike.z - 1.75, strike.x + 1.75, strike.y + 3.5, strike.z + 1.75);
                     for (LivingEntity v : Combat.foes(fish, box, e -> Combat.horizontalDist(e.position(), strike) <= 1.75)) {
                         if (Combat.hit(fish, b.cfg, v, 1.1, 0)) Combat.push(v, new Vec3(0, 0.5, 0));

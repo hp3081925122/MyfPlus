@@ -7,6 +7,7 @@ import javax.annotation.Nullable;
 
 import com.hp.myfplus.core.BossSkill;
 import com.hp.myfplus.core.Combat;
+import com.hp.myfplus.fx.Fx;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
 
@@ -23,6 +24,7 @@ public class DashSkill extends BossSkill {
     private Vec3 dir = new Vec3(0, 0, 1);
     private double speed;
     private double groundY;
+    private double total;
     private int dashTicks;
     private int stage;
     private int st;
@@ -52,7 +54,7 @@ public class DashSkill extends BossSkill {
         Vec3 h = new Vec3(tp.x - start.x, 0, tp.z - start.z);
         double len = h.length();
         dir = len < 0.5 ? Combat.dirFromYaw(fish.getYRot()) : h.scale(1 / len);
-        double total = len + 4;
+        total = len + 4;
         dashTicks = Mth.clamp((int) Math.round(total / 1.2), 8, 18);
         speed = total / dashTicks;
         stage = 0;
@@ -78,6 +80,8 @@ public class DashSkill extends BossSkill {
                     b.flight.manual();
                     b.flight.face(null);
                     fish.playSound(SoundEvents.PLAYER_SPLASH_HIGH_SPEED, 2.0f, 0.7f);
+                    Fx.rockLine(fish.level(), new Vec3(start.x, groundY, start.z), Combat.yawTo(Vec3.ZERO, dir), (float) total, 1.6f, (float) speed);
+                    Fx.shake(fish.level(), start, 0.3f);
                 }
             }
             case 1 -> {
@@ -97,6 +101,9 @@ public class DashSkill extends BossSkill {
                     st = 0;
                     fish.setAnimation(SwampjawEntity.ANIM_STUN);
                     fish.playSound(SoundEvents.ZOMBIE_ATTACK_WOODEN_DOOR, 1.5f, 0.6f);
+                    Vec3 crash = new Vec3(fish.getX(), b.ground(fish.getX(), fish.getZ(), fish.getY()), fish.getZ());
+                    Fx.rockBurst(fish.level(), crash, 1.5f, 10);
+                    Fx.shake(fish.level(), crash, 0.6f);
                     return false;
                 }
                 if (st >= dashTicks) {

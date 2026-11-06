@@ -7,6 +7,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -14,10 +15,12 @@ import net.minecraft.resources.ResourceLocation;
 
 public class FxEntityRenderer extends EntityRenderer<FxEntity> {
     private static final float[] SHRINK = {1f, 0.75f, 0.5f, 0.375f};
+    private final BlockRenderDispatcher blocks;
 
     public FxEntityRenderer(EntityRendererProvider.Context ctx) {
         super(ctx);
         shadowRadius = 0;
+        blocks = ctx.getBlockRenderDispatcher();
     }
 
     @Override
@@ -27,7 +30,7 @@ public class FxEntityRenderer extends EntityRenderer<FxEntity> {
 
     @Override
     public boolean shouldRender(FxEntity e, Frustum frustum, double x, double y, double z) {
-        if (!e.shouldRenderAtSqrDistance(e.distanceToSqr(x, y, z))) return false;
+        if (e.fx.kind == FxType.Kind.EVENT || !e.shouldRenderAtSqrDistance(e.distanceToSqr(x, y, z))) return false;
         float r = Math.max(Math.max(e.size, e.length), e.fx.height) * Math.max(1f, e.fx.width) + 2;
         return frustum.isVisible(e.getBoundingBox().inflate(r));
     }
@@ -45,6 +48,16 @@ public class FxEntityRenderer extends EntityRenderer<FxEntity> {
         int lt = t.bright ? FxDraw.FULL : light;
         int color = FxDraw.alpha(0xFFFFFF, fade(e, age));
         switch (t.kind) {
+            case ROCK_RING, ROCK_LINE, ROCK_BURST -> {
+                if (!(e.clientCache instanceof RockFx)) {
+                    e.clientCache = switch (t.kind) {
+                        case ROCK_RING -> RockFx.ring(e.level(), e);
+                        case ROCK_LINE -> RockFx.line(e.level(), e);
+                        default -> RockFx.burst(e.level(), e);
+                    };
+                }
+                ((RockFx) e.clientCache).draw(ps, buf, blocks, age, e.life);
+            }
             case WARN_LINE, WARN_SECTOR, WARN_CIRCLE -> {
                 if (!(e.clientCache instanceof WarnGrid)) e.clientCache = WarnGrid.build(e.level(), e, MyfConfig.WARN_CELL.get().floatValue());
                 ((WarnGrid) e.clientCache).draw(ps, buf.getBuffer(FxDraw.type(FxDraw.WHITE)), e.palette, age, e.life, fade(e, age));

@@ -4,6 +4,7 @@ import javax.annotation.Nullable;
 
 import com.hp.myfplus.core.BossSkill;
 import com.hp.myfplus.core.Combat;
+import com.hp.myfplus.fx.Fx;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
 
@@ -72,6 +73,11 @@ public class MireSkill extends BossSkill {
         fish.playSound(SoundEvents.MUD_BREAK, 3.0f, 0.5f);
         FxEntity.at(fish.level(), FxType.SJ_SLAM, slam).size(RADIUS * 2).spawn();
         FxEntity.at(fish.level(), FxType.SJ_GEYSER, slam).spawn();
+        Fx.rockRing(fish.level(), slam, 9f, 0.6f);
+        Fx.rockBurst(fish.level(), slam, 2.5f, 18);
+        Fx.shake(fish.level(), slam, 1.2f);
+        Fx.banner(fish.level(), slam, Fx.BOSS_SWAMPJAW, 2);
+        b.setPhase(2);
         AABB box = new AABB(slam.x - RADIUS, slam.y - 1, slam.z - RADIUS, slam.x + RADIUS, slam.y + 3, slam.z + RADIUS);
         for (LivingEntity v : Combat.foes(fish, box, e -> Combat.horizontalDist(e.position(), slam) <= RADIUS)) Combat.hit(fish, b.cfg, v, 0.8, 0.5);
         b.phase2 = true;

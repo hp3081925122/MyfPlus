@@ -23,6 +23,9 @@ public final class MyfConfig {
 
     public static final ForgeConfigSpec.BooleanValue SCREEN_OVERLAY;
     public static final ForgeConfigSpec.ConfigValue<Double> WARN_CELL;
+    public static final ForgeConfigSpec.BooleanValue SCREEN_SHAKE;
+    public static final ForgeConfigSpec.BooleanValue BOSS_FOG;
+    public static final ForgeConfigSpec.BooleanValue PHASE_BANNER;
 
     static {
         ForgeConfigSpec.Builder b = new ForgeConfigSpec.Builder();
@@ -48,6 +51,9 @@ public final class MyfConfig {
         ForgeConfigSpec.Builder c = new ForgeConfigSpec.Builder();
         SCREEN_OVERLAY = c.comment("罗莎琳第三阶段是否显示暮色屏幕叠加", "Show the dusk screen overlay during Rosalyne's last phase").define("screenOverlay", true);
         WARN_CELL = c.comment("预警格子边长（格），可选 0.25 或 0.5", "Warning grid cell size in blocks, 0.25 or 0.5").defineInList("warningCellSize", 0.25, List.of(0.25, 0.5));
+        SCREEN_SHAKE = c.comment("Boss 重击时是否震动镜头", "Shake the camera on heavy boss hits").define("screenShake", true);
+        BOSS_FOG = c.comment("Boss 特定阶段是否改变雾气", "Let certain boss phases change the fog").define("bossFog", true);
+        PHASE_BANNER = c.comment("是否显示 Boss 阶段横幅", "Show boss phase banners").define("phaseBanner", true);
         CLIENT_SPEC = c.build();
     }
 

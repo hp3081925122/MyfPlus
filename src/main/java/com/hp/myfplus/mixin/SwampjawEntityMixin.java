@@ -30,6 +30,8 @@ public abstract class SwampjawEntityMixin extends BossFlyingEntity implements My
     @Unique
     private static final EntityDataAccessor<Integer> MYFPLUS_SKILL_START = SynchedEntityData.defineId(SwampjawEntity.class, EntityDataSerializers.INT);
     @Unique
+    private static final EntityDataAccessor<Integer> MYFPLUS_PHASE = SynchedEntityData.defineId(SwampjawEntity.class, EntityDataSerializers.INT);
+    @Unique
     @Nullable
     private SwampjawBrain myfplus$brain;
 
@@ -50,6 +52,7 @@ public abstract class SwampjawEntityMixin extends BossFlyingEntity implements My
     private void myfplus$defineData(CallbackInfo ci) {
         entityData.define(MYFPLUS_SKILL, 0);
         entityData.define(MYFPLUS_SKILL_START, 0);
+        entityData.define(MYFPLUS_PHASE, 1);
     }
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
@@ -80,6 +83,16 @@ public abstract class SwampjawEntityMixin extends BossFlyingEntity implements My
         if (entityData.get(MYFPLUS_SKILL) == skill) return;
         entityData.set(MYFPLUS_SKILL, skill);
         entityData.set(MYFPLUS_SKILL_START, (int) level().getGameTime());
+    }
+
+    @Override
+    public int myfplus$phase() {
+        return entityData.get(MYFPLUS_PHASE);
+    }
+
+    @Override
+    public void myfplus$setPhase(int phase) {
+        entityData.set(MYFPLUS_PHASE, phase);
     }
 
     @Override

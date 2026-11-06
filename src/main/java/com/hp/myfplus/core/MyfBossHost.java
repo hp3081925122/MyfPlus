@@ -9,6 +9,10 @@ public interface MyfBossHost {
 
     void myfplus$setSkill(int skill);
 
+    int myfplus$phase();
+
+    void myfplus$setPhase(int phase);
+
     @Nullable
     BossBrain<?> myfplus$brain();
 }

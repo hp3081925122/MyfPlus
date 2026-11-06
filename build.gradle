@@ -16,11 +16,22 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
 }
 
+def selfMcpDir = file('E:/模组/自用工具源码+产物/Minecraft Self MCP/Minecraft Self MCP-1.20.1-Forge/build/libs')
+def selfMcpJar = new File(selfMcpDir, 'self_mcp-1.20.1-forge-0.3.0.jar')
+
 repositories {
     maven {
         url = 'https://www.cursemaven.com'
         content {
             includeGroup 'curse.maven'
+        }
+    }
+    if (selfMcpJar.exists()) {
+        flatDir {
+            dirs selfMcpDir
+            content {
+                includeGroup 'local'
+            }
         }
     }
 }
@@ -57,6 +68,9 @@ minecraft {
 
         client {
             property 'forge.enabledGameTestNamespaces', project.mod_id
+            if (project.hasProperty('mctestHidden')) {
+                property 'selfmcp.window', 'hidden'
+            }
         }
 
         server {
@@ -89,6 +103,10 @@ dependencies {
     implementation fg.deobf("curse.maven:meet-your-fight-409371:${project.myf_file_id}")
     // Meet Your Fight 的必需前置 Curios，CurseForge 文件 6418456（1.20.1 Forge）
     implementation fg.deobf("curse.maven:curios-309927:${project.curios_file_id}")
+
+    if (selfMcpJar.exists()) {
+        runtimeOnly fg.deobf("local:self_mcp-1.20.1-forge:0.3.0")
+    }
 
     implementation fg.deobf("curse.maven:jei-238222:8778011")
     implementation fg.deobf("curse.maven:just-enough-characters-250702:8771525")

@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.hp.myfplus.core.BossSkill;
 import com.hp.myfplus.core.Combat;
 import com.hp.myfplus.entity.BoneHookEntity;
+import com.hp.myfplus.fx.Fx;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
 import com.hp.myfplus.registry.MyfEntities;
@@ -108,6 +109,8 @@ public class HookSkill extends BossSkill {
                 if (fish.distanceTo(v) < 3.0 || st >= 30) {
                     if (fish.distanceTo(v) < 4.5) Combat.hit(fish, b.cfg, v, 0.8, 0.4);
                     fish.playSound(SoundEvents.EVOKER_FANGS_ATTACK, 1.5f, 0.7f);
+                    FxEntity.at(fish.level(), FxType.SJ_CHOMP, SwampjawBrain.mouth(fish)).size(1.2f).spawn();
+                    Fx.shake(fish.level(), v.position(), 0.5f);
                     hook.discard();
                     return true;
                 }

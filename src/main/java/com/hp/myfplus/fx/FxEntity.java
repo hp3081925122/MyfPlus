@@ -1,5 +1,9 @@
 package com.hp.myfplus.fx;
 
+import java.util.function.Consumer;
+
+import javax.annotation.Nullable;
+
 import com.hp.myfplus.registry.MyfEntities;
 
 import net.minecraft.nbt.CompoundTag;
@@ -14,15 +18,22 @@ import net.minecraftforge.entity.IEntityAdditionalSpawnData;
 import net.minecraftforge.network.NetworkHooks;
 
 public class FxEntity extends Entity implements IEntityAdditionalSpawnData {
+    @Nullable
+    public static Consumer<FxEntity> clientSpawnHook;
+
     public FxType fx = FxType.NONE;
     public int life = 20;
     public float size = 1;
     public float length = 1;
     public float width = 1;
+    public float speed = 0.5f;
+    public float shake;
     public int palette;
+    public int count = 12;
     public int follow = -1;
     public double offX, offY, offZ;
     public Object clientCache;
+    private boolean announced;
 
     public FxEntity(EntityType<? extends FxEntity> type, Level level) {
         super(type, level);
@@ -60,6 +71,21 @@ public class FxEntity extends Entity implements IEntityAdditionalSpawnData {
         return this;
     }
 
+    public FxEntity speed(float s) {
+        speed = s;
+        return this;
+    }
+
+    public FxEntity shake(float s) {
+        shake = s;
+        return this;
+    }
+
+    public FxEntity count(int c) {
+        count = c;
+        return this;
+    }
+
     public FxEntity yaw(float yaw) {
         setYRot(yaw);
         yRotO = yaw;
@@ -94,6 +120,10 @@ public class FxEntity extends Entity implements IEntityAdditionalSpawnData {
         xo = getX();
         yo = getY();
         zo = getZ();
+        if (level().isClientSide && !announced) {
+            announced = true;
+            if (clientSpawnHook != null) clientSpawnHook.accept(this);
+        }
         if (follow >= 0) {
             Entity e = level().getEntity(follow);
             if (e != null && e.isAlive()) setPos(e.getX() + offX, e.getY() + offY, e.getZ() + offZ);
@@ -150,7 +180,10 @@ public class FxEntity extends Entity implements IEntityAdditionalSpawnData {
         buf.writeFloat(size);
         buf.writeFloat(length);
         buf.writeFloat(width);
+        buf.writeFloat(speed);
+        buf.writeFloat(shake);
         buf.writeVarInt(palette);
+        buf.writeVarInt(count);
         buf.writeVarInt(follow);
         buf.writeDouble(offX);
         buf.writeDouble(offY);
@@ -169,7 +202,10 @@ public class FxEntity extends Entity implements IEntityAdditionalSpawnData {
         size = buf.readFloat();
         length = buf.readFloat();
         width = buf.readFloat();
+        speed = buf.readFloat();
+        shake = buf.readFloat();
         palette = buf.readVarInt();
+        count = buf.readVarInt();
         follow = buf.readVarInt();
         offX = buf.readDouble();
         offY = buf.readDouble();

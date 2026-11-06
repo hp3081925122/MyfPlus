@@ -34,6 +34,10 @@ public abstract class BossBrain<T extends Mob> {
         ((MyfBossHost) boss).myfplus$setSkill(id);
     }
 
+    public void setPhase(int phase) {
+        ((MyfBossHost) boss).myfplus$setPhase(phase);
+    }
+
     public abstract int globalGap();
 
     public void serverTick() {

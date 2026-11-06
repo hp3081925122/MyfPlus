@@ -6,16 +6,29 @@ import com.hp.myfplus.client.render.BoneHookRenderer;
 import com.hp.myfplus.client.render.GasCloudRenderer;
 import com.hp.myfplus.client.render.MudPitRenderer;
 import com.hp.myfplus.client.render.SimpleSpriteRenderers;
+import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.registry.MyfEntities;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 
 @Mod.EventBusSubscriber(modid = Myfplus.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public final class ClientSetup {
     private ClientSetup() {
+    }
+
+    @SubscribeEvent
+    public static void setup(FMLClientSetupEvent e) {
+        FxEntity.clientSpawnHook = ClientFx::onFxSpawn;
+    }
+
+    @SubscribeEvent
+    public static void overlays(RegisterGuiOverlaysEvent e) {
+        e.registerAboveAll("boss_banner", ClientFx::renderBanner);
     }
 
     @SubscribeEvent
