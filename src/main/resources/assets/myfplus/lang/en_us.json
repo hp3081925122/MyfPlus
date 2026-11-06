@@ -5,7 +5,14 @@
   "entity.myfplus.bone_hook": "Bone Hook",
   "entity.myfplus.swamp_bubble": "Swamp Bubble",
   "entity.myfplus.gas_cloud": "Toxic Fog",
+  "entity.myfplus.bell_wave": "Bell Wave",
+  "entity.myfplus.echo_mark": "Echo Mark",
+  "entity.myfplus.phantom_bell": "Phantom Bell",
+  "entity.myfplus.bell_dome": "Bell Dome",
   "myfplus.banner.swampjaw": "SWAMPJAW",
   "myfplus.banner.swampjaw.phase1": "Act I · The Lurker",
-  "myfplus.banner.swampjaw.phase2": "Act II · Lord of the Mire"
+  "myfplus.banner.swampjaw.phase2": "Act II · Lord of the Mire",
+  "myfplus.banner.bellringer": "BELLRINGER",
+  "myfplus.banner.bellringer.phase1": "Act I · The Night Watch",
+  "myfplus.banner.bellringer.phase2": "Act II · A Thousand Bells"
 }

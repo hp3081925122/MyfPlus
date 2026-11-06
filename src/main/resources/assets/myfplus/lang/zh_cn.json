@@ -5,7 +5,14 @@
   "entity.myfplus.bone_hook": "骨钩",
   "entity.myfplus.swamp_bubble": "沼气泡",
   "entity.myfplus.gas_cloud": "毒雾",
+  "entity.myfplus.bell_wave": "钟波",
+  "entity.myfplus.echo_mark": "余音印记",
+  "entity.myfplus.phantom_bell": "幻影巨钟",
+  "entity.myfplus.bell_dome": "钟罩",
   "myfplus.banner.swampjaw": "沼 牙",
   "myfplus.banner.swampjaw.phase1": "第一幕 · 伏猎者",
-  "myfplus.banner.swampjaw.phase2": "第二幕 · 泥沼之王"
+  "myfplus.banner.swampjaw.phase2": "第二幕 · 泥沼之王",
+  "myfplus.banner.bellringer": "敲 钟 人",
+  "myfplus.banner.bellringer.phase1": "第一幕 · 守夜钟声",
+  "myfplus.banner.bellringer.phase2": "第二幕 · 万钟共鸣"
 }
