@@ -9,10 +9,19 @@
   "entity.myfplus.echo_mark": "余音印记",
   "entity.myfplus.phantom_bell": "幻影巨钟",
   "entity.myfplus.bell_dome": "钟罩",
+  "entity.myfplus.dice": "灌铅骰子",
+  "entity.myfplus.chip": "筹码",
+  "entity.myfplus.roulette": "轮盘",
+  "entity.myfplus.slot_machine": "老虎机",
+  "entity.myfplus.all_in": "梭哈筹码塔",
   "myfplus.banner.swampjaw": "沼 牙",
   "myfplus.banner.swampjaw.phase1": "第一幕 · 伏猎者",
   "myfplus.banner.swampjaw.phase2": "第二幕 · 泥沼之王",
   "myfplus.banner.bellringer": "敲 钟 人",
   "myfplus.banner.bellringer.phase1": "第一幕 · 守夜钟声",
-  "myfplus.banner.bellringer.phase2": "第二幕 · 万钟共鸣"
+  "myfplus.banner.bellringer.phase2": "第二幕 · 万钟共鸣",
+  "myfplus.banner.dame_fortuna": "命 运 夫 人",
+  "myfplus.banner.dame_fortuna.phase1": "第一幕 · 开局",
+  "myfplus.banner.dame_fortuna.phase2": "第二幕 · 加注",
+  "myfplus.banner.dame_fortuna.phase3": "终幕 · 皇家同花顺"
 }

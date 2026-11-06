@@ -9,10 +9,19 @@
   "entity.myfplus.echo_mark": "Echo Mark",
   "entity.myfplus.phantom_bell": "Phantom Bell",
   "entity.myfplus.bell_dome": "Bell Dome",
+  "entity.myfplus.dice": "Loaded Die",
+  "entity.myfplus.chip": "Chip",
+  "entity.myfplus.roulette": "Roulette",
+  "entity.myfplus.slot_machine": "Slot Machine",
+  "entity.myfplus.all_in": "All-In Stack",
   "myfplus.banner.swampjaw": "SWAMPJAW",
   "myfplus.banner.swampjaw.phase1": "Act I · The Lurker",
   "myfplus.banner.swampjaw.phase2": "Act II · Lord of the Mire",
   "myfplus.banner.bellringer": "BELLRINGER",
   "myfplus.banner.bellringer.phase1": "Act I · The Night Watch",
-  "myfplus.banner.bellringer.phase2": "Act II · A Thousand Bells"
+  "myfplus.banner.bellringer.phase2": "Act II · A Thousand Bells",
+  "myfplus.banner.dame_fortuna": "DAME FORTUNA",
+  "myfplus.banner.dame_fortuna.phase1": "Act I · The Opening Hand",
+  "myfplus.banner.dame_fortuna.phase2": "Act II · Raising the Stakes",
+  "myfplus.banner.dame_fortuna.phase3": "Finale · Royal Flush"
 }
