@@ -25,10 +25,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -46,6 +48,13 @@ public final class CommonEvents {
     @SubscribeEvent
     public static void onAttack(LivingAttackEvent e) {
         if (e.getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null && host.myfplus$brain().blocksAttack(e.getSource())) e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onImpact(ProjectileImpactEvent e) {
+        if (e.getProjectile().level().isClientSide || !(e.getRayTraceResult() instanceof EntityHitResult hit)) return;
+        if (hit.getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null && host.myfplus$brain().deflects(e.getProjectile()))
+            e.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
     }
 
     @SubscribeEvent

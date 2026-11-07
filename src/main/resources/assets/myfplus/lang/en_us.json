@@ -23,5 +23,12 @@
   "myfplus.banner.dame_fortuna": "DAME FORTUNA",
   "myfplus.banner.dame_fortuna.phase1": "Act I · The Opening Hand",
   "myfplus.banner.dame_fortuna.phase2": "Act II · Raising the Stakes",
-  "myfplus.banner.dame_fortuna.phase3": "Finale · Royal Flush"
+  "myfplus.banner.dame_fortuna.phase3": "Finale · Royal Flush",
+  "entity.myfplus.thorn": "Thorn",
+  "entity.myfplus.petal_blade": "Petal Blade",
+  "entity.myfplus.duel_ring": "Thorn Duel Ring",
+  "myfplus.banner.rosalyne": "ROSALYNE",
+  "myfplus.banner.rosalyne.phase1": "Act I · Dusk Blade Dance",
+  "myfplus.banner.rosalyne.phase2": "Act II · Corolla",
+  "myfplus.banner.rosalyne.phase3": "Finale · Thorn Duel"
 }

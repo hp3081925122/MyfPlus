@@ -41,10 +41,21 @@ public enum FxType {
     FT_CROWN(Kind.BILL, "fortuna/allin_crown", 1, 1, false, 1.0f, 1.0f, 40, true),
     FT_BROKEN(Kind.BILL, "fortuna/allin_broken", 1, 1, false, 1.0f, 1.0f, 40, true),
     FT_SMOKE(Kind.BILL, "fortuna/slot_smoke", 4, 3, false, 1.2f, 1.2f, 12, false),
-    FT_JACKPOT(Kind.BILL, "fortuna/jackpot", 4, 2, false, 2.5f, 2.5f, 8, true);
+    FT_JACKPOT(Kind.BILL, "fortuna/jackpot", 4, 2, false, 2.5f, 2.5f, 8, true),
+    RS_GLINT(Kind.BILL, "rosalyne/glint", 3, 2, false, 0.6f, 0.6f, 10, true),
+    RS_ARC(Kind.ARC, "rosalyne/slash_arc", 6, 1, false, 0.8f, 1.0f, 7, true),
+    RS_THRUST(Kind.SLASH_LINE, "rosalyne/thrust", 4, 2, false, 1.0f, 1.0f, 8, true),
+    RS_SIGIL(Kind.BILL, "rosalyne/parry_sigil", 3, 4, true, 2.0f, 2.0f, 60, true),
+    RS_SIGIL_BREAK(Kind.BILL, "rosalyne/parry_break", 5, 2, false, 2.0f, 2.0f, 10, true),
+    RS_SUNSET(Kind.BILL, "rosalyne/sunset", 4, 3, false, 3.0f, 3.0f, 40, true),
+    RS_SUN_BLADE(Kind.VBILL, "rosalyne/sun_blade", 6, 2, false, 1.0f, 3.0f, 12, true),
+    RS_PETAL_BURST(Kind.BILL, "rosalyne/petal_burst", 4, 2, false, 2.0f, 2.0f, 8, true),
+    RS_PETAL_BREAK(Kind.BILL, "rosalyne/petal_break", 4, 2, false, 1.0f, 1.0f, 8, false),
+    RS_SPROUT(Kind.DECAL, "rosalyne/sprout_mark", 1, 1, false, 1.0f, 1.0f, 20, false),
+    RS_GHOST(Kind.GHOST, null, 1, 1, false, 1, 1, 10, true);
 
     public enum Kind {
-        NONE, WARN_LINE, WARN_SECTOR, WARN_CIRCLE, DECAL, DECAL_SHRINK, BILL, VBILL, VBILL_DROP, ROCK_RING, ROCK_LINE, ROCK_BURST, EVENT
+        NONE, WARN_LINE, WARN_SECTOR, WARN_CIRCLE, DECAL, DECAL_SHRINK, BILL, VBILL, VBILL_DROP, ARC, SLASH_LINE, ROCK_RING, ROCK_LINE, ROCK_BURST, EVENT, GHOST
     }
 
     public final Kind kind;

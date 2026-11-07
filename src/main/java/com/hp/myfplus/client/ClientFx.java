@@ -11,6 +11,7 @@ import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
 import com.mojang.blaze3d.systems.RenderSystem;
 
+import lykrast.meetyourfight.entity.RosalyneEntity;
 import lykrast.meetyourfight.entity.SwampjawEntity;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -36,6 +37,8 @@ public final class ClientFx {
     private static long bannerStart;
     private static float fog;
     private static float fogTarget;
+    private static float dusk;
+    private static float duskTarget;
 
     private ClientFx() {
     }
@@ -84,8 +87,15 @@ public final class ClientFx {
             fogTarget = 0;
             SHAKES.clear();
             bannerBoss = -1;
+            dusk = 0;
+            duskTarget = 0;
             return;
         }
+        if (mc.level.getGameTime() % 10 == 5) {
+            duskTarget = mc.level.getEntitiesOfClass(RosalyneEntity.class, mc.player.getBoundingBox().inflate(32),
+                    s -> s.isAlive() && s instanceof MyfBossHost h && h.myfplus$phase() >= 3).isEmpty() ? 0 : 1;
+        }
+        dusk = Mth.approach(dusk, duskTarget, 0.02f);
         if (mc.level.getGameTime() % 10 == 0) {
             fogTarget = mc.level.getEntitiesOfClass(SwampjawEntity.class, mc.player.getBoundingBox().inflate(40),
                     s -> s.isAlive() && s instanceof MyfBossHost h && h.myfplus$phase() >= 2).isEmpty() ? 0 : 1;
@@ -110,6 +120,23 @@ public final class ClientFx {
         e.setRed(Mth.lerp(k, e.getRed(), 0.25f));
         e.setGreen(Mth.lerp(k, e.getGreen(), 0.31f));
         e.setBlue(Mth.lerp(k, e.getBlue(), 0.20f));
+    }
+
+    public static void renderDusk(ForgeGui gui, GuiGraphics g, float partial, int w, int h) {
+        if (dusk <= 0.001f || !MyfConfig.SCREEN_OVERLAY.get() || gui.getMinecraft().options.hideGui) return;
+        ResourceLocation tex = FxDraw.tex("rosalyne/dusk_overlay");
+        int bx = Math.max(16, w / 6), by = Math.max(16, h / 6);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        g.setColor(1f, 1f, 1f, dusk * 0.85f);
+        g.blit(tex, 0, 0, 0, 0, w, by, 64, 64);
+        g.blit(tex, 0, h - by, 0, h - by, w, by, 64, 64);
+        g.blit(tex, 0, by, 0, by, bx, h - by * 2, 64, 64);
+        g.blit(tex, w - bx, by, w - bx, by, bx, h - by * 2, 64, 64);
+        g.setColor(1f, 1f, 1f, dusk * 0.3f);
+        g.blit(tex, bx, by, bx, by, w - bx * 2, h - by * 2, 64, 64);
+        g.setColor(1f, 1f, 1f, 1f);
+        RenderSystem.disableBlend();
     }
 
     public static void renderBanner(ForgeGui gui, GuiGraphics g, float partial, int w, int h) {

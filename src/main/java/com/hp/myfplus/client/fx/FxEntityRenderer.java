@@ -6,7 +6,14 @@ import com.hp.myfplus.fx.FxType;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 
+import com.mojang.math.Axis;
+
+import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -38,6 +45,24 @@ public class FxEntityRenderer extends EntityRenderer<FxEntity> {
     private static float fade(FxEntity e, float age) {
         float in = e.fx.kind.name().startsWith("WARN") ? Math.min(1f, age / 3f) : 1f;
         return Math.max(0f, Math.min(in, (e.life - age) / 3f + 0.34f));
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private void ghost(FxEntity e, float age, float partial, PoseStack ps, MultiBufferSource buf, int light) {
+        if (!(e.level().getEntity(e.count) instanceof LivingEntity src)) return;
+        if (!(entityRenderDispatcher.getRenderer(src) instanceof LivingEntityRenderer r)) return;
+        EntityModel model = r.getModel();
+        float a = Math.max(0f, Math.min(1f, (e.life - age) / e.life)) * 0.55f;
+        if (a <= 0.01f) return;
+        ps.pushPose();
+        ps.mulPose(Axis.YP.rotationDegrees(180f - e.getYRot()));
+        ps.scale(-1f, -1f, 1f);
+        ps.translate(0f, -1.501f, 0f);
+        model.prepareMobModel(src, 0, 0, partial);
+        model.setupAnim(src, 0, 0, src.tickCount + partial, 0, 0);
+        VertexConsumer vc = new TintedConsumer(buf.getBuffer(RenderType.entityTranslucent(r.getTextureLocation(src))), 0.54f, 0.29f, 0.72f, a);
+        model.renderToBuffer(ps, vc, FxDraw.FULL, OverlayTexture.NO_OVERLAY, 0.54f, 0.29f, 0.72f, a);
+        ps.popPose();
     }
 
     @Override
@@ -82,6 +107,14 @@ public class FxEntityRenderer extends EntityRenderer<FxEntity> {
                 int f = FxDraw.frame(t.frames, t.ticksPerFrame, t.loop, age);
                 FxDraw.billboard(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture))), entityRenderDispatcher.cameraOrientation(), t.width * e.size, t.height * e.size, f, t.frames, color, lt);
             }
+            case ARC -> {
+                int f = FxDraw.frame(t.frames, t.ticksPerFrame, t.loop, age);
+                SlashDraw.arc(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture))), e.getYRot(), e.size, e.width, (float) e.offY, e.palette == 1, f, t.frames, color);
+            }
+            case SLASH_LINE -> {
+                int f = FxDraw.frame(t.frames, t.ticksPerFrame, t.loop, age);
+                SlashDraw.line(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture))), e.getYRot(), e.length, e.width, (float) e.offY, f, t.frames, color);
+            }
             case VBILL_DROP -> {
                 float k = Math.min(1f, age / 8f);
                 float a = Math.max(0f, Math.min(1f, (e.life - age) / 6f));
@@ -95,6 +128,7 @@ public class FxEntityRenderer extends EntityRenderer<FxEntity> {
                 int f = FxDraw.frame(t.frames, t.ticksPerFrame, t.loop, age);
                 FxDraw.vbillboard(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture))), entityRenderDispatcher.camera.getYRot(), t.width * e.size, t.height * e.size, f, t.frames, color, lt);
             }
+            case GHOST -> ghost(e, age, partial, ps, buf, light);
             default -> {
             }
         }

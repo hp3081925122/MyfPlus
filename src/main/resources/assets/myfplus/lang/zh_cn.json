@@ -23,5 +23,12 @@
   "myfplus.banner.dame_fortuna": "命 运 夫 人",
   "myfplus.banner.dame_fortuna.phase1": "第一幕 · 开局",
   "myfplus.banner.dame_fortuna.phase2": "第二幕 · 加注",
-  "myfplus.banner.dame_fortuna.phase3": "终幕 · 皇家同花顺"
+  "myfplus.banner.dame_fortuna.phase3": "终幕 · 皇家同花顺",
+  "entity.myfplus.thorn": "荆棘",
+  "entity.myfplus.petal_blade": "花刃",
+  "entity.myfplus.duel_ring": "荆棘决斗场",
+  "myfplus.banner.rosalyne": "罗 莎 琳",
+  "myfplus.banner.rosalyne.phase1": "第一幕 · 黄昏剑舞",
+  "myfplus.banner.rosalyne.phase2": "第二幕 · 花冠",
+  "myfplus.banner.rosalyne.phase3": "终幕 · 荆棘决斗场"
 }

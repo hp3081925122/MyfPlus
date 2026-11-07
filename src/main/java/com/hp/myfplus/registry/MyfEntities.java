@@ -7,6 +7,9 @@ import com.hp.myfplus.entity.AllInEntity;
 import com.hp.myfplus.entity.BoneHookEntity;
 import com.hp.myfplus.entity.ChipEntity;
 import com.hp.myfplus.entity.DiceEntity;
+import com.hp.myfplus.entity.DuelRingEntity;
+import com.hp.myfplus.entity.PetalBladeEntity;
+import com.hp.myfplus.entity.ThornEntity;
 import com.hp.myfplus.entity.RouletteEntity;
 import com.hp.myfplus.entity.SlotMachineEntity;
 import com.hp.myfplus.entity.EchoMarkEntity;
@@ -42,6 +45,9 @@ public final class MyfEntities {
     public static final RegistryObject<EntityType<RouletteEntity>> ROULETTE = misc("roulette", RouletteEntity::new, 0.5f, 0.2f, 40);
     public static final RegistryObject<EntityType<SlotMachineEntity>> SLOT_MACHINE = misc("slot_machine", SlotMachineEntity::new, 2.0f, 1.6f, 40);
     public static final RegistryObject<EntityType<AllInEntity>> ALL_IN = misc("all_in", AllInEntity::new, 0.5f, 0.5f, 40);
+    public static final RegistryObject<EntityType<ThornEntity>> THORN = misc("thorn", ThornEntity::new, 0.9f, 1.6f, 40);
+    public static final RegistryObject<EntityType<PetalBladeEntity>> PETAL_BLADE = misc("petal_blade", PetalBladeEntity::new, 0.6f, 0.6f, 1);
+    public static final RegistryObject<EntityType<DuelRingEntity>> DUEL_RING = misc("duel_ring", DuelRingEntity::new, 0.5f, 0.5f, 40);
 
     private MyfEntities() {
     }

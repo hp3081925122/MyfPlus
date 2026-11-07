@@ -7,6 +7,7 @@
   "mixins": [
     "BellringerEntityMixin",
     "DameFortunaEntityMixin",
+    "RosalyneEntityMixin",
     "SwampjawEntityMixin"
   ],
   "client": [

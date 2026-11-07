@@ -5,6 +5,7 @@ import com.hp.myfplus.client.fx.FxEntityRenderer;
 import com.hp.myfplus.client.render.BellRenderers;
 import com.hp.myfplus.client.render.BoneHookRenderer;
 import com.hp.myfplus.client.render.FortunaRenderers;
+import com.hp.myfplus.client.render.RosaRenderers;
 import com.hp.myfplus.client.render.GasCloudRenderer;
 import com.hp.myfplus.client.render.MudPitRenderer;
 import com.hp.myfplus.client.render.SimpleSpriteRenderers;
@@ -30,6 +31,7 @@ public final class ClientSetup {
 
     @SubscribeEvent
     public static void overlays(RegisterGuiOverlaysEvent e) {
+        e.registerBelowAll("rosalyne_dusk", ClientFx::renderDusk);
         e.registerAboveAll("boss_banner", ClientFx::renderBanner);
     }
 
@@ -50,5 +52,8 @@ public final class ClientSetup {
         e.registerEntityRenderer(MyfEntities.ROULETTE.get(), FortunaRenderers.Roulette::new);
         e.registerEntityRenderer(MyfEntities.SLOT_MACHINE.get(), FortunaRenderers.Slot::new);
         e.registerEntityRenderer(MyfEntities.ALL_IN.get(), FortunaRenderers.AllIn::new);
+        e.registerEntityRenderer(MyfEntities.THORN.get(), RosaRenderers.Thorn::new);
+        e.registerEntityRenderer(MyfEntities.PETAL_BLADE.get(), RosaRenderers.Petal::new);
+        e.registerEntityRenderer(MyfEntities.DUEL_RING.get(), RosaRenderers.Ring::new);
     }
 }
