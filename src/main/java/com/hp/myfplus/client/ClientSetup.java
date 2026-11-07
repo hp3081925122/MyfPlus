@@ -3,12 +3,9 @@ package com.hp.myfplus.client;
 import com.hp.myfplus.Myfplus;
 import com.hp.myfplus.client.fx.FxEntityRenderer;
 import com.hp.myfplus.client.render.BellRenderers;
-import com.hp.myfplus.client.render.BoneHookRenderer;
 import com.hp.myfplus.client.render.FortunaRenderers;
 import com.hp.myfplus.client.render.RosaRenderers;
-import com.hp.myfplus.client.render.GasCloudRenderer;
-import com.hp.myfplus.client.render.MudPitRenderer;
-import com.hp.myfplus.client.render.SimpleSpriteRenderers;
+import com.hp.myfplus.client.render.SwampjawRenderers;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.registry.MyfEntities;
 
@@ -38,11 +35,8 @@ public final class ClientSetup {
     @SubscribeEvent
     public static void renderers(EntityRenderersEvent.RegisterRenderers e) {
         e.registerEntityRenderer(MyfEntities.FX.get(), FxEntityRenderer::new);
-        e.registerEntityRenderer(MyfEntities.MUD_PIT.get(), MudPitRenderer::new);
-        e.registerEntityRenderer(MyfEntities.GAS_CLOUD.get(), GasCloudRenderer::new);
-        e.registerEntityRenderer(MyfEntities.MUD_GLOB.get(), SimpleSpriteRenderers.Glob::new);
-        e.registerEntityRenderer(MyfEntities.SWAMP_BUBBLE.get(), SimpleSpriteRenderers.Bubble::new);
-        e.registerEntityRenderer(MyfEntities.BONE_HOOK.get(), BoneHookRenderer::new);
+        e.registerEntityRenderer(MyfEntities.FOSSIL_JAW.get(), SwampjawRenderers.Jaw::new);
+        e.registerEntityRenderer(MyfEntities.FIN_BLADE.get(), SwampjawRenderers.Fin::new);
         e.registerEntityRenderer(MyfEntities.BELL_WAVE.get(), BellRenderers.Wave::new);
         e.registerEntityRenderer(MyfEntities.ECHO_MARK.get(), BellRenderers.Mark::new);
         e.registerEntityRenderer(MyfEntities.PHANTOM_BELL.get(), BellRenderers.Bell::new);

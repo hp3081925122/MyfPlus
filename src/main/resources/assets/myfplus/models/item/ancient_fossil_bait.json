@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "myfplus:item/ancient_fossil_bait"
+  }
+}

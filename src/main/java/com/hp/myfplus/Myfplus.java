@@ -2,6 +2,7 @@ package com.hp.myfplus;
 
 import com.hp.myfplus.config.MyfConfig;
 import com.hp.myfplus.registry.MyfEntities;
+import com.hp.myfplus.registry.MyfItems;
 
 import lykrast.meetyourfight.registry.MYFEntities;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -19,6 +20,8 @@ public final class Myfplus {
     public Myfplus(FMLJavaModLoadingContext context) {
         IEventBus bus = context.getModEventBus();
         MyfEntities.REG.register(bus);
+        MyfItems.REG.register(bus);
+        bus.addListener(MyfItems::tabs);
         bus.addListener(Myfplus::attributes);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MyfConfig.COMMON_SPEC, "myfplus-common.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, MyfConfig.CLIENT_SPEC, "myfplus-client.toml");

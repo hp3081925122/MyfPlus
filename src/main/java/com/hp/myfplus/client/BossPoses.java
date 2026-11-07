@@ -15,7 +15,7 @@ public final class BossPoses {
 
     public static void apply(LivingEntity entity, EntityModel<?> model, float partial) {
         if (!(entity instanceof MyfBossHost host) || host.myfplus$skill() == 0) return;
-        if (model instanceof SwampjawModelAccessor sj && host.myfplus$skill() == SwampjawBrain.SKILL_SPIT) {
+        if (model instanceof SwampjawModelAccessor sj && host.myfplus$skill() == SwampjawBrain.SKILL_JAW) {
             float k = Mth.clamp((host.myfplus$skillAge() + partial) / 5f, 0f, 1f);
             ModelPart jaw = sj.myfplus$jaw();
             jaw.xRot = Math.max(jaw.xRot, 45f * k * Mth.DEG_TO_RAD);

@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import com.hp.myfplus.boss.swampjaw.SwampjawBrain;
 import com.hp.myfplus.config.MyfConfig;
 import com.hp.myfplus.core.BossBrain;
+import com.hp.myfplus.core.EnhanceableBoss;
 import com.hp.myfplus.core.MyfBossHost;
 
 import lykrast.meetyourfight.entity.BossFlyingEntity;
@@ -23,8 +24,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.FlyingMob;
 import net.minecraft.world.level.Level;
 
+/** 沼牙默认保持本体行为；只有远古化石之饵召唤的个体（存档标记 myfplus.enhanced）才换上新技能。 */
 @Mixin(SwampjawEntity.class)
-public abstract class SwampjawEntityMixin extends BossFlyingEntity implements MyfBossHost {
+public abstract class SwampjawEntityMixin extends BossFlyingEntity implements MyfBossHost, EnhanceableBoss {
     @Unique
     private static final EntityDataAccessor<Integer> MYFPLUS_SKILL = SynchedEntityData.defineId(SwampjawEntity.class, EntityDataSerializers.INT);
     @Unique
@@ -34,18 +36,26 @@ public abstract class SwampjawEntityMixin extends BossFlyingEntity implements My
     @Unique
     @Nullable
     private SwampjawBrain myfplus$brain;
+    @Unique
+    private boolean myfplus$enhanced;
 
     protected SwampjawEntityMixin(EntityType<? extends FlyingMob> type, Level level) {
         super(type, level);
     }
 
-    @Inject(method = "<init>", at = @At("TAIL"))
-    private void myfplus$init(EntityType<? extends SwampjawEntity> type, Level level, CallbackInfo ci) {
-        if (level.isClientSide || !MyfConfig.SWAMPJAW.enabled()) return;
+    @Override
+    public void myfplus$enhance() {
+        myfplus$enhanced = true;
+        if (myfplus$brain != null || level().isClientSide || !MyfConfig.SWAMPJAW.enabled()) return;
         SwampjawBrain brain = new SwampjawBrain((SwampjawEntity) (Object) this);
         myfplus$brain = brain;
         moveControl = brain.flight;
         brain.install(goalSelector);
+    }
+
+    @Override
+    public boolean myfplus$enhanced() {
+        return myfplus$enhanced;
     }
 
     @Inject(method = "defineSynchedData", at = @At("TAIL"))
@@ -57,15 +67,20 @@ public abstract class SwampjawEntityMixin extends BossFlyingEntity implements My
 
     @Inject(method = "addAdditionalSaveData", at = @At("TAIL"))
     private void myfplus$save(CompoundTag tag, CallbackInfo ci) {
-        if (myfplus$brain == null) return;
+        if (!myfplus$enhanced) return;
         CompoundTag t = new CompoundTag();
-        myfplus$brain.save(t);
+        t.putBoolean("enhanced", true);
+        if (myfplus$brain != null) myfplus$brain.save(t);
         tag.put("myfplus", t);
     }
 
     @Inject(method = "readAdditionalSaveData", at = @At("TAIL"))
     private void myfplus$load(CompoundTag tag, CallbackInfo ci) {
-        if (myfplus$brain != null && tag.contains("myfplus")) myfplus$brain.load(tag.getCompound("myfplus"));
+        if (!tag.contains("myfplus")) return;
+        CompoundTag t = tag.getCompound("myfplus");
+        if (!t.getBoolean("enhanced")) return;
+        myfplus$enhance();
+        if (myfplus$brain != null) myfplus$brain.load(t);
     }
 
     @Override

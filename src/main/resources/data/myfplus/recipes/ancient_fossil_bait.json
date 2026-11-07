@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    { "item": "meetyourfight:fossil_bait" },
+    { "item": "meetyourfight:mossy_tooth" },
+    { "item": "minecraft:prismarine_shard" },
+    { "item": "minecraft:prismarine_shard" },
+    { "item": "minecraft:bone" },
+    { "item": "minecraft:bone" },
+    { "item": "minecraft:bone" },
+    { "item": "minecraft:bone" }
+  ],
+  "result": { "item": "myfplus:ancient_fossil_bait" }
+}

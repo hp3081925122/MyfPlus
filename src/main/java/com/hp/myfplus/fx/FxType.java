@@ -10,18 +10,15 @@ public enum FxType {
     ROCK_BURST(Kind.ROCK_BURST, null, 1, 1, false, 1, 1, 36, false),
     SHAKE(Kind.EVENT, null, 1, 1, false, 1, 1, 10, false),
     BANNER(Kind.EVENT, null, 1, 1, false, 1, 1, 10, false),
-    SJ_SPLASH(Kind.VBILL, "swampjaw/splash", 4, 2, false, 1.25f, 1.25f, 8, false),
-    SJ_HOOK_GLINT(Kind.BILL, "swampjaw/hook_glint", 2, 3, true, 0.5f, 0.5f, 12, true),
-    SJ_VINE_SNAP(Kind.BILL, "swampjaw/vine_snap", 3, 3, false, 1.0f, 1.0f, 9, false),
-    SJ_RIPPLE(Kind.DECAL, "swampjaw/ripple", 3, 4, false, 1.5f, 1.5f, 12, false),
-    SJ_AMBUSH_RING(Kind.DECAL_SHRINK, "swampjaw/ambush_ring_", 4, 1, false, 4.0f, 4.0f, 20, true),
-    SJ_GEYSER_SMALL(Kind.VBILL, "swampjaw/geyser_small", 6, 2, false, 1.0f, 2.0f, 12, false),
-    SJ_GEYSER(Kind.VBILL, "swampjaw/geyser", 6, 2, false, 1.5f, 4.5f, 12, false),
-    SJ_BUBBLE_POP(Kind.BILL, "swampjaw/bubble_pop", 5, 2, false, 2.0f, 2.0f, 10, false),
-    SJ_FIN(Kind.VBILL, "swampjaw/fin", 2, 6, true, 1.25f, 1.25f, 200, false),
-    SJ_SLAM(Kind.DECAL, "swampjaw/slam_ring", 4, 2, false, 1.0f, 1.0f, 8, false),
-    SJ_VORTEX(Kind.DECAL, "swampjaw/vortex", 4, 3, true, 1.0f, 1.0f, 100, false),
-    SJ_CHOMP(Kind.BILL, "swampjaw/chomp", 4, 2, false, 2.0f, 2.0f, 8, false),
+    SJ_FIN(Kind.VBILL, "swampjaw/fin", 2, 3, true, 1.5f, 1.5f, 200, false),
+    SJ_BREACH(Kind.VBILL, "swampjaw/breach", 6, 2, false, 2.5f, 3.75f, 12, false),
+    SJ_DROP(Kind.DECAL_SHRINK, "swampjaw/drop_mark_", 4, 1, false, 4.0f, 4.0f, 18, true),
+    SJ_MAW(Kind.BILL, "swampjaw/maw", 4, 2, false, 2.0f, 2.0f, 10, false),
+    SJ_CHARGE(Kind.BILL, "swampjaw/charge", 4, 2, true, 1.2f, 1.2f, 24, true),
+    SJ_BEAM(Kind.BEAM, "swampjaw/beam_", 2, 2, true, 1.1f, 1.0f, 30, true),
+    SJ_SPOUT(Kind.VBILL, "swampjaw/spout", 5, 2, false, 1.25f, 2.5f, 10, false),
+    SJ_SWIPE(Kind.ARC, "swampjaw/swipe", 4, 2, false, 1.0f, 1.0f, 8, false),
+    SJ_ROAR(Kind.BILL, "swampjaw/roar", 5, 2, false, 4.0f, 4.0f, 10, true),
     BR_NOTE(Kind.BILL, "bellringer/note", 3, 3, false, 0.75f, 0.75f, 10, true),
     BR_PILLAR(Kind.VBILL, "bellringer/echo_pillar", 5, 2, false, 2.0f, 6.0f, 10, true),
     BR_IMPACT(Kind.DECAL, "bellringer/impact_ring", 4, 2, false, 1.0f, 1.0f, 8, true),
@@ -55,7 +52,7 @@ public enum FxType {
     RS_GHOST(Kind.GHOST, null, 1, 1, false, 1, 1, 10, true);
 
     public enum Kind {
-        NONE, WARN_LINE, WARN_SECTOR, WARN_CIRCLE, DECAL, DECAL_SHRINK, BILL, VBILL, VBILL_DROP, ARC, SLASH_LINE, ROCK_RING, ROCK_LINE, ROCK_BURST, EVENT, GHOST
+        NONE, WARN_LINE, WARN_SECTOR, WARN_CIRCLE, DECAL, DECAL_SHRINK, BILL, VBILL, VBILL_DROP, ARC, SLASH_LINE, ROCK_RING, ROCK_LINE, ROCK_BURST, EVENT, GHOST, BEAM
     }
 
     public final Kind kind;

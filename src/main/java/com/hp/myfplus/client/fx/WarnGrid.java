@@ -14,7 +14,7 @@ import net.minecraft.world.phys.Vec3;
 
 public final class WarnGrid {
     private static final int[][] PALETTES = {
-            {0xE8E4CC, 0x9CC45A, 0x1E1A12},
+            {0xEDE3C4, 0x5E9C86, 0x2A2116},
             {0xA8F0F8, 0x5FD8E8, 0x1A1030},
             {0xF0C040, 0xE84848, 0x1A1A1A},
             {0xF0B050, 0x8A4AB8, 0x14101E}

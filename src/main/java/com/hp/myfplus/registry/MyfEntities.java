@@ -4,7 +4,8 @@ import com.hp.myfplus.Myfplus;
 import com.hp.myfplus.entity.BellDomeEntity;
 import com.hp.myfplus.entity.BellWaveEntity;
 import com.hp.myfplus.entity.AllInEntity;
-import com.hp.myfplus.entity.BoneHookEntity;
+import com.hp.myfplus.entity.FinBladeEntity;
+import com.hp.myfplus.entity.FossilJawEntity;
 import com.hp.myfplus.entity.ChipEntity;
 import com.hp.myfplus.entity.DiceEntity;
 import com.hp.myfplus.entity.DuelRingEntity;
@@ -14,10 +15,6 @@ import com.hp.myfplus.entity.RouletteEntity;
 import com.hp.myfplus.entity.SlotMachineEntity;
 import com.hp.myfplus.entity.EchoMarkEntity;
 import com.hp.myfplus.entity.PhantomBellEntity;
-import com.hp.myfplus.entity.GasCloudEntity;
-import com.hp.myfplus.entity.MudGlobEntity;
-import com.hp.myfplus.entity.MudPitEntity;
-import com.hp.myfplus.entity.SwampBubbleEntity;
 import com.hp.myfplus.fx.FxEntity;
 
 import net.minecraft.world.entity.Entity;
@@ -31,11 +28,8 @@ public final class MyfEntities {
     public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Myfplus.MOD_ID);
 
     public static final RegistryObject<EntityType<FxEntity>> FX = misc("fx", FxEntity::new, 0.2f, 0.2f, 20);
-    public static final RegistryObject<EntityType<MudPitEntity>> MUD_PIT = misc("mud_pit", MudPitEntity::new, 0.5f, 0.2f, 40);
-    public static final RegistryObject<EntityType<MudGlobEntity>> MUD_GLOB = misc("mud_glob", MudGlobEntity::new, 0.6f, 0.6f, 20);
-    public static final RegistryObject<EntityType<BoneHookEntity>> BONE_HOOK = misc("bone_hook", BoneHookEntity::new, 0.5f, 0.5f, 1);
-    public static final RegistryObject<EntityType<SwampBubbleEntity>> SWAMP_BUBBLE = misc("swamp_bubble", SwampBubbleEntity::new, 0.8f, 0.8f, 2);
-    public static final RegistryObject<EntityType<GasCloudEntity>> GAS_CLOUD = misc("gas_cloud", GasCloudEntity::new, 0.5f, 0.2f, 40);
+    public static final RegistryObject<EntityType<FossilJawEntity>> FOSSIL_JAW = misc("fossil_jaw", FossilJawEntity::new, 0.5f, 0.2f, 100);
+    public static final RegistryObject<EntityType<FinBladeEntity>> FIN_BLADE = misc("fin_blade", FinBladeEntity::new, 0.8f, 0.4f, 100);
     public static final RegistryObject<EntityType<BellWaveEntity>> BELL_WAVE = misc("bell_wave", BellWaveEntity::new, 0.5f, 0.2f, 40);
     public static final RegistryObject<EntityType<EchoMarkEntity>> ECHO_MARK = misc("echo_mark", EchoMarkEntity::new, 0.5f, 0.2f, 40);
     public static final RegistryObject<EntityType<PhantomBellEntity>> PHANTOM_BELL = misc("phantom_bell", PhantomBellEntity::new, 2.5f, 3.0f, 40);
