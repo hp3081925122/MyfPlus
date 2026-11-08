@@ -1,27 +1,27 @@
 package com.hp.myfplus.core;
 
 import com.hp.myfplus.Myfplus;
+import com.hp.myfplus.config.MyfConfig;
 import com.hp.myfplus.registry.MyfEffects;
-import com.hp.myfplus.fx.FxEntity;
-import com.hp.myfplus.fx.FxType;
-import com.mojang.brigadier.arguments.FloatArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
-import com.mojang.brigadier.context.CommandContext;
+import com.mojang.logging.LogUtils;
 
 import lykrast.meetyourfight.config.MYFConfigValues;
 import lykrast.meetyourfight.entity.BellringerEntity;
 import lykrast.meetyourfight.entity.DameFortunaEntity;
-import net.minecraft.commands.CommandSourceStack;
-import net.minecraft.commands.Commands;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
+import lykrast.meetyourfight.entity.ProjectileBossAbstract;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
@@ -36,17 +36,12 @@ import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = Myfplus.MOD_ID)
 public final class CommonEvents {
-    private static final String ATK_INIT = "myfplus_atk_init";
+    private static final String INIT = "myfplus_init";
 
     private CommonEvents() {
     }
 
-    @SubscribeEvent
-    public static void onAttack(LivingAttackEvent e) {
-        if (e.getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null && host.myfplus$brain().blocksAttack(e.getSource())) e.setCanceled(true);
-    }
-
-    private static boolean stunned(net.minecraft.world.entity.Entity e) {
+    private static boolean stunned(Entity e) {
         return e instanceof LivingEntity l && l.hasEffect(MyfEffects.STUNNED.get());
     }
 
@@ -89,96 +84,61 @@ public final class CommonEvents {
 
     @SubscribeEvent
     public static void onImpact(ProjectileImpactEvent e) {
-        if (e.getProjectile().level().isClientSide || !(e.getRayTraceResult() instanceof EntityHitResult hit)) return;
-        if (hit.getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null && host.myfplus$brain().deflects(e.getProjectile()))
+        if (e.getProjectile().level().isClientSide || !(e.getProjectile() instanceof ProjectileBossAbstract proj)) return;
+        if (!(e.getRayTraceResult() instanceof EntityHitResult hit) || !(proj.getOwner() instanceof LivingEntity owner)) return;
+        if (owner instanceof Player && !(hit.getEntity() instanceof LivingEntity v && Shots.foe(owner, v)))
+            e.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
+        else if (owner instanceof EnhancedBoss && hit.getEntity() instanceof EnhancedBoss)
             e.setImpactResult(ProjectileImpactEvent.ImpactResult.SKIP_ENTITY);
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGH)
     public static void onHurt(LivingHurtEvent e) {
-        if (e.getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null) e.setAmount(host.myfplus$brain().onHurt(e.getSource(), e.getAmount()));
-        if (e.getSource().getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null) e.setAmount(host.myfplus$brain().onDealDamage(e.getEntity(), e.getAmount()));
+        if (!(e.getSource().getDirectEntity() instanceof ProjectileBossAbstract proj)) return;
+        Entity owner = proj.getOwner();
+        CompoundTag d = proj.getPersistentData();
+        if (owner instanceof EnhancedBoss boss && owner instanceof LivingEntity le) {
+            double mult = d.contains(Shots.MULT) ? d.getDouble(Shots.MULT) : 1.0;
+            e.setAmount((float) (le.getAttributeValue(Attributes.ATTACK_DAMAGE) * mult * boss.myfplus$cfg().damage()));
+        }
+        else if (owner instanceof Player p) {
+            float amount = d.contains(Shots.FLAT) ? d.getFloat(Shots.FLAT)
+                    : (float) (MyfConfig.DIE_BASE.get() + MyfConfig.DIE_SCALE.get() * p.getAttributeValue(Attributes.ATTACK_DAMAGE));
+            e.setAmount(amount);
+            int stun = d.getInt(Shots.STUN);
+            LivingEntity v = e.getEntity();
+            if (stun > 0 && !v.getType().is(Tags.EntityTypes.BOSSES))
+                v.addEffect(new MobEffectInstance(MyfEffects.STUNNED.get(), stun, 0, false, true, true), p);
+        }
     }
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent e) {
-        LivingEntity boss = e.getEntity();
-        if (!(boss instanceof MyfBossHost host) || host.myfplus$brain() == null || e.getAmount() < boss.getHealth()) return;
-        if (host.myfplus$brain().interceptLethal(e.getSource())) e.setAmount(0);
-    }
-
-    @SubscribeEvent
-    public static void onLivingTick(LivingEvent.LivingTickEvent e) {
-        if (e.getEntity().level().isClientSide) return;
-        if (e.getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null) host.myfplus$brain().serverTick();
+        LivingEntity v = e.getEntity();
+        if (!(v instanceof EnhancedBoss boss) || boss.myfplus$phase2() || !boss.myfplus$cfg().phase2()) return;
+        if (e.getAmount() < v.getHealth() || e.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return;
+        e.setAmount(0);
+        v.setHealth(v.getMaxHealth());
+        LogUtils.getLogger().debug("Enhanced boss {} enters phase 2", v.getType().getDescriptionId());
+        boss.myfplus$enterPhase2();
     }
 
     @SubscribeEvent
     public static void onJoin(EntityJoinLevelEvent e) {
-        if (e.getLevel().isClientSide() || !(e.getEntity() instanceof Mob mob) || !(mob instanceof MyfBossHost)) return;
-        double base;
-        if (mob instanceof BellringerEntity) base = BellringerEntity.DMG * MYFConfigValues.BELLRINGER_DMG_MULT;
-        else if (mob instanceof DameFortunaEntity) base = DameFortunaEntity.DMG * MYFConfigValues.FORTUNA_DMG_MULT;
-        else return;
-        if (mob.getPersistentData().getBoolean(ATK_INIT)) return;
+        if (e.getLevel().isClientSide() || !(e.getEntity() instanceof Mob mob) || !(mob instanceof EnhancedBoss boss)) return;
+        if (mob.getPersistentData().getBoolean(INIT)) return;
+        mob.getPersistentData().putBoolean(INIT, true);
         AttributeInstance atk = mob.getAttribute(Attributes.ATTACK_DAMAGE);
-        if (atk == null) return;
-        atk.setBaseValue(base);
-        mob.getPersistentData().putBoolean(ATK_INIT, true);
-    }
-
-    @SubscribeEvent
-    public static void onCommands(RegisterCommandsEvent e) {
-        e.getDispatcher().register(Commands.literal(Myfplus.MOD_ID).requires(s -> s.hasPermission(2))
-                .then(Commands.literal("skill").then(Commands.argument("name", StringArgumentType.word()).executes(CommonEvents::forceSkill)))
-                .then(Commands.literal("fx").then(Commands.argument("type", StringArgumentType.word())
-                        .executes(c -> spawnFx(c, 2f))
-                        .then(Commands.argument("size", FloatArgumentType.floatArg(0.1f, 32f)).executes(c -> spawnFx(c, FloatArgumentType.getFloat(c, "size")))))));
-    }
-
-    private static int forceSkill(CommandContext<CommandSourceStack> c) {
-        String name = StringArgumentType.getString(c, "name");
-        Vec3 pos = c.getSource().getPosition();
-        Mob best = null;
-        double bestD = 64 * 64;
-        for (Mob m : c.getSource().getLevel().getEntitiesOfClass(Mob.class, new net.minecraft.world.phys.AABB(pos, pos).inflate(64), m -> m instanceof MyfBossHost h && h.myfplus$brain() != null)) {
-            double d = m.distanceToSqr(pos);
-            if (d < bestD) {
-                bestD = d;
-                best = m;
-            }
+        if (atk != null) {
+            if (mob instanceof BellringerEntity) atk.setBaseValue(BellringerEntity.DMG * MYFConfigValues.BELLRINGER_DMG_MULT);
+            else if (mob instanceof DameFortunaEntity) atk.setBaseValue(DameFortunaEntity.DMG * MYFConfigValues.FORTUNA_DMG_MULT);
+            if (boss.myfplus$cfg().attack() != 1.0)
+                atk.addPermanentModifier(new AttributeModifier("myfplus config attack", boss.myfplus$cfg().attack() - 1.0, AttributeModifier.Operation.MULTIPLY_TOTAL));
         }
-        if (best == null) {
-            c.getSource().sendFailure(Component.literal("No reworked boss nearby"));
-            return 0;
+        AttributeInstance hp = mob.getAttribute(Attributes.MAX_HEALTH);
+        if (hp != null && boss.myfplus$cfg().health() != 1.0) {
+            hp.addPermanentModifier(new AttributeModifier("myfplus config health", boss.myfplus$cfg().health() - 1.0, AttributeModifier.Operation.MULTIPLY_TOTAL));
+            mob.setHealth(mob.getMaxHealth());
         }
-        BossBrain<?> brain = ((MyfBossHost) best).myfplus$brain();
-        if (brain == null || !brain.director.forceByName(name)) {
-            c.getSource().sendFailure(Component.literal("Unknown skill: " + name));
-            return 0;
-        }
-        c.getSource().sendSuccess(() -> Component.literal("Queued " + name), false);
-        return 1;
-    }
-
-    private static int spawnFx(CommandContext<CommandSourceStack> c, float size) {
-        FxType type;
-        try {
-            type = FxType.valueOf(StringArgumentType.getString(c, "type").toUpperCase());
-        }
-        catch (IllegalArgumentException ex) {
-            c.getSource().sendFailure(Component.literal("Unknown fx"));
-            return 0;
-        }
-        if (!(c.getSource().getEntity() instanceof ServerPlayer p)) return 0;
-        Vec3 look = Combat.dirFromYaw(p.getYRot());
-        double x = p.getX() + look.x * 4;
-        double z = p.getZ() + look.z * 4;
-        double y = GroundProbe.under(p.level(), x, z, p.getY() + 0.5);
-        FxEntity fx = FxEntity.at(p.level(), type, x, y, z).size(size).yaw(p.getYRot()).life(type.life * 3);
-        if (type == FxType.WARN_SECTOR) fx.line(size, 90f);
-        else fx.line(size * 3, 1.5f);
-        fx.spawn();
-        return 1;
     }
 }

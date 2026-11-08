@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import com.hp.myfplus.core.MyfBossHost;
+import com.hp.myfplus.core.EnhancedBoss;
 
 import lykrast.meetyourfight.entity.BossEntity;
 import lykrast.meetyourfight.entity.DameFortunaEntity;
@@ -14,7 +14,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.level.Level;
 
-/** 仅对强化命运夫人生效：跳过本体按血量阈值洗牌的阶段推进，改由技能大脑在一阶段致死时转入二阶段，本体命运夫人不受影响。 */
+/** 仅对进入二阶段的强化命运夫人生效：不再按血量阈值洗牌，血量打空即死亡。 */
 @Mixin(DameFortunaEntity.class)
 public abstract class DameFortunaEntityMixin extends BossEntity {
     @Shadow(remap = false)
@@ -32,8 +32,8 @@ public abstract class DameFortunaEntityMixin extends BossEntity {
     public abstract int getPhase();
 
     @Inject(method = "customServerAiStep", at = @At("HEAD"), cancellable = true)
-    private void myfplus$phases(CallbackInfo ci) {
-        if (!((Object) this instanceof MyfBossHost host) || host.myfplus$brain() == null) return;
+    private void myfplus$noShuffle(CallbackInfo ci) {
+        if (!((Object) this instanceof EnhancedBoss boss) || !boss.myfplus$phase2()) return;
         if (attackCooldown > 0) attackCooldown--;
         if (shuffleAttackWait > 0) shuffleAttackWait--;
         if (phase != getPhase()) phase = getPhase();

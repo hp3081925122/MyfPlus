@@ -1,42 +1,36 @@
 # Meet Your Fight Plus
 
-An addon for **Meet Your Fight** that adds enhanced versions of its four bosses. Each one has a new moveset and its own pixel-art effects. The original bosses are not changed: their summon items still summon the normal versions, and the enhanced versions use new summon items crafted from the original bosses' drops.
+An addon for **Meet Your Fight** that adds enhanced versions of its four bosses. Each enhanced boss keeps all of the original boss's attacks and phases, attacks more often, chases you harder and adds new skills built from Meet Your Fight's own projectiles and effects. The original bosses are not changed: their summon items still summon the normal versions, and the enhanced versions use new summon items crafted from the original bosses' drops.
 
 Requires **Meet Your Fight** and **Curios API**.
 
 ## Enhanced bosses
 
-Every enhanced boss has two phases. The first lethal hit in phase 1 refills its health and plays a transition, and it only dies when phase 2 is emptied. Every damaging skill has a visible telegraph, and every random result (dice, roulette, slots) is shown to you before it takes effect.
+Every enhanced boss has two phases. When its health runs out in phase 1, it refills its health and enters phase 2, where it attacks even more often and unlocks extra skills. It only dies when phase 2 is emptied. Skill damage scales with the boss's attack damage.
 
 ### Ancient Swampjaw
 
-A fossil predator that treats the ground like water.
-
-*   Dives into the ground and swims toward you under a wave of blocks, then bursts out and leaps at you.
-*   Fossil jaws erupt under your feet and snap shut. Spits a volley of fossil spikes that rain down on marked spots.
-*   Spinning fin blades, a double tail sweep and, in phase 2, a ring of fangs that closes on you.
+*   Faster swoops, fewer bombs between swoops and a shorter stun.
+*   Rebite: after a swoop it can turn around and swoop again. Mud Spit: lobs mines at where you are and where you are going. Tail Sweep: punishes you for standing close.
+*   Phase 2: Mire Vortex (circles above you dropping a ring of mines, then swoops) and Foul Rain (mines fall on marked spots).
 
 ### Resonant Bellringer
 
-A rhythm boss: the bell sets the beat and every attack lands on a beat.
-
-*   Bell waves, echo marks that explode one beat later, and a death knell counting down above your head.
-*   Scale Quake: lines of sound pillars erupt one per beat.
-*   Belfry Resonance transition and a final grand toll in phase 2.
+*   Follows you faster, attacks more times per round with shorter gaps.
+*   Cross Toll, Bell Ring and Echo Toll: new ghost line patterns aimed at you.
+*   Phase 2 starts with its rage attack, then adds Pendulum (a sweeping wall of lines) and Carillon (a checkerboard of falling lines).
 
 ### High-Roller Dame Fortuna
 
-The house always shows you its hand.
-
-*   Loaded dice, roulette, a slot machine, chip fans and a Royal Flush finisher.
-*   All-In replaces the original card shuffle as her phase transition.
+*   Throws more dice, spins faster and scatters chips more often. The card shuffle is kept in phase 1.
+*   Pincer Dice, Chip Rain and Raise Dash (two fast passes leaving dice bombs behind).
+*   Phase 2 (no more shuffles): Royal Flush (a grid of homing chips) and All-In (a ring of dice bombs).
 
 ### Rosalyne, Blade of Sunset
 
-A precise melee duelist themed around thorns and sunset.
-
-*   Three-hit dusk blade combo, thorn corridors, a parry stance that stuns careless attackers, and sunset slashes.
-*   Corolla and thorn dueling arena transitions, then the Final Waltz in phase 2.
+*   Approaches faster and swings more often. The seal, rose spirits and frenzy are kept.
+*   Rose Fan (a fan of rose ghost lines) and Blink Strike (reappears behind you and slashes).
+*   Phase 2: more dash circles, a Rose Fan after every crash, Sunset Ring (a ring of rose lines followed by a crash) and Corolla (summons two rose spirits to help her).
 
 ## Summon items
 
@@ -49,16 +43,18 @@ Crafted only from the original bosses' drops, so you have to beat each original 
 
 ## Drops and accessories
 
-Enhanced bosses drop everything the original boss drops, plus one exclusive trophy: Ancient Jawbone, Resonant Clapper, House's Gilded Die or Sunset Rose. Each trophy crafts a Curios accessory:
+Enhanced bosses drop everything the original boss drops, plus one exclusive trophy: Ancient Jawbone, Resonant Clapper, House's Gilded Die or Sunset Rose. Each trophy crafts a Curios accessory based on that boss's new skills:
 
-*   **Fossil Fang Bracelet** (bracelet): melee hits can drop a fossil spike on the target, dealing damage and Slowness II.
-*   **Resonant Belt Bell** (belt): every 4th hit releases a resonance that damages nearby enemies.
-*   **House Die Ring** (ring): rolls a die on every hit. A 1 halves the damage, 2 to 5 add a little, a 6 doubles it. Also gives +1 Luck.
-*   **Sunset Rose Cloak** (back): blocks one melee hit, counters the attacker and stuns non-boss mobs. Has a cooldown.
+*   **Fossil Fang Bracelet** (bracelet): melee hits can plant a mine under the target that soon explodes.
+*   **Resonant Belt Bell** (belt): every 4th consecutive hit fires Bellringer ghost lines at the target from four sides.
+*   **House Die Ring** (ring): hits can throw a Fortuna dice bomb at the target. Also gives +1 Luck.
+*   **Sunset Rose Cloak** (back): when you are hit in melee, fires a fan of rose ghost lines at the attacker and stuns non-boss mobs. Has a cooldown. The lines cannot hit Rosalyne or rose spirits.
+
+Accessory projectiles never hit you, other players or your pets.
 
 ## Config
 
-`config/myfplus-common.toml`: each boss's rework can be turned off (restoring its original skills), and you can change skill damage and cooldown multipliers, several skill parameters (beat intervals, parry window, arena radius and more) and every accessory value. `config/myfplus-client.toml` toggles screen shake, boss fog and phase banners.
+`config/myfplus-common.toml`: for each boss, health and attack multipliers (applied once when it spawns), skill damage multiplier, cooldown multiplier, the chance for each attack to be a new skill, and whether it has phase 2. Every accessory value is also configurable.
 
 ## License and source
 
@@ -70,43 +66,37 @@ Source: https://github.com/hp3081925122/MyfPlus
 
 # 迎战增强
 
-**Meet Your Fight（迎战）** 的附属模组。它为本体的四个 Boss 各加了一个强化版，每个强化版都有全新的技能组和专属像素特效。本体 Boss 保持原样，本体召唤物仍然召唤普通版。强化版要用新的召唤物召唤，这些召唤物用本体 Boss 的掉落物合成。
+**Meet Your Fight（迎战）** 的附属模组。它为本体的四个 Boss 各加了一个强化版。强化版保留本体 Boss 的全部招式和阶段流程，攻击更频繁、追击更紧，并加入用迎战本体弹幕和特效做成的新技能。本体 Boss 保持原样，本体召唤物仍然召唤普通版。强化版要用新的召唤物召唤，这些召唤物用本体 Boss 的掉落物合成。
 
 前置：**Meet Your Fight**、**Curios API**。
 
 ## 强化 Boss
 
-每个强化 Boss 都有两个阶段。一阶段第一次受到致命伤时会回满血并播放转阶段演出，二阶段血量打空才会死亡。所有造成伤害的技能都有可见的前摇提示。所有随机结果（骰子、轮盘、老虎机）都会在生效前先展示给玩家。
+每个强化 Boss 都有两个阶段。一阶段生命耗尽时会回满血进入二阶段，攻击更频繁并解锁额外技能，二阶段血量打空才会死亡。技能伤害随 Boss 攻击力变化。
 
 ### 远古沼泽巨颌怪
 
-把地面当作水域的化石掠食者。
-
-*   钻进地里，顶着方块浪游向玩家，再破土跃起扑击。
-*   化石巨颌从玩家脚下破土咬合；吐出一簇化石骨刺，砸向事先标出的落点。
-*   回旋骨鳍刃、连续两次回身尾击；二阶段会展开獠牙环，向圆心合拢。
+*   俯冲更快，两次俯冲之间投的水雷更少，被打晕的时间更短。
+*   连环回咬：俯冲后可能立刻掉头再冲一次。泥沼喷吐：朝你的位置和预判位置抛水雷。甩尾横扫：贴身时甩尾。
+*   二阶段：泥沼漩涡（在你头顶绕圈投下一圈水雷后俯冲）、腐水暴雨（水雷砸向预先标出的落点）。
 
 ### 万钟敲钟人
 
-节奏型 Boss：钟声定下节拍，所有攻击都在拍点上结算。
-
-*   钟波；余音印记会在一拍后爆炸；丧钟会在玩家头顶倒计时。
-*   音阶裂地：每一拍升起一排声波柱。
-*   转阶段为钟楼共振，二阶段有万钟归一大招。
+*   追身更快，每轮攻击次数更多、间隔更短。
+*   十字钟鸣、钟环、回响追钟：新的幽灵线攻击。
+*   二阶段一开始就触发狂暴攻击，之后加入钟摆（来回扫过的幽灵线墙）和万钟齐鸣（棋盘格天降线）。
 
 ### 豪赌福尔图娜女爵
 
-庄家的每一手牌都摊开给你看。
-
-*   灌铅骰子、轮盘、老虎机、筹码扇射，以及皇家同花顺终结技。
-*   转阶段改为梭哈，取代本体的洗牌找牌。
+*   骰子更多、旋转更快、撒筹码更密。一阶段保留洗牌找牌。
+*   夹击骰、筹码雨、加注冲刺（两次高速穿过你并沿路留下骰子炸弹）。
+*   二阶段（不再洗牌）：同花顺（一排排追踪筹码）、梭哈（一圈骰子炸弹）。
 
 ### 落日之锋，罗莎琳
 
-以荆棘与落日为主题的精准近战决斗者。
-
-*   暮刃三段、荆棘回廊、凋花架势（格挡反击，会眩晕无脑平 A 的玩家）、落日斩。
-*   转阶段依次是花冠和荆棘决斗场，二阶段有终幕圆舞。
+*   接近更快、挥砍更勤。保留封印、玫瑰灵和狂乱。
+*   玫瑰扇刃（扇形玫瑰幽灵线）、瞬步斩（出现在你背后挥砍）。
+*   二阶段：绕圈冲刺次数更多，每次下劈后接玫瑰扇刃；落日环刃（一圈玫瑰幽灵线后接下劈）；花冠再临（召唤两只玫瑰灵助战）。
 
 ## 召唤物
 
@@ -119,16 +109,18 @@ Source: https://github.com/hp3081925122/MyfPlus
 
 ## 掉落与饰品
 
-强化 Boss 会掉落本体 Boss 的全部掉落物，另外固定掉落 1 个专属物品：远古颌骨、共鸣钟舌、庄家金骰或落日玫瑰。专属物品可以合成对应的 Curios 饰品：
+强化 Boss 会掉落本体 Boss 的全部掉落物，另外固定掉落 1 个专属物品：远古颌骨、共鸣钟舌、庄家金骰或落日玫瑰。专属物品可以合成对应的 Curios 饰品，效果来自该 Boss 的新技能：
 
-*   **化石獠牙手镯**（手镯）：近战命中时有几率在目标头上落下化石骨刺，造成伤害并附加缓慢 II。
-*   **共鸣腰铃**（腰带）：每第 4 次命中触发共鸣，伤害周围的敌人。
-*   **庄家骰戒**（戒指）：每次造成伤害时掷骰。1 点伤害减半，2~5 点小幅加伤，6 点伤害翻倍。另外幸运 +1。
-*   **落日玫瑰披风**（背部）：格挡一次近战攻击并反击，非 Boss 生物会被眩晕。有冷却时间。
+*   **化石獠牙手镯**（手镯）：近战命中时有几率在目标脚下埋下水雷，片刻后爆炸。
+*   **共鸣腰铃**（腰带）：连续第 4 次命中时，从目标四个方向射出敲钟人幽灵线。
+*   **庄家骰戒**（戒指）：命中时有几率向目标掷出命运骰子炸弹。另外幸运 +1。
+*   **落日玫瑰披风**（背部）：受到近战攻击时向攻击者扇形射出玫瑰幽灵线，非 Boss 生物会被眩晕。有冷却时间。幽灵线打不中罗莎琳和玫瑰灵。
+
+饰品弹幕不会打中自己、其他玩家和自己的宠物。
 
 ## 配置
 
-`config/myfplus-common.toml`：可以单独关闭每个 Boss 的技能重做（恢复本体技能），也可以调整技能伤害倍率、冷却倍率、部分技能参数（节拍间隔、架势时长、决斗场半径等）以及所有饰品数值。`config/myfplus-client.toml` 可以开关镜头震动、Boss 雾气和阶段横幅。
+`config/myfplus-common.toml`：每个 Boss 都可以调生命和攻击倍率（只在生成时应用一次）、技能伤害倍率、冷却倍率、每次攻击改放新技能的几率，以及是否启用二阶段。所有饰品数值也可以配置。
 
 ## 许可与源码
 

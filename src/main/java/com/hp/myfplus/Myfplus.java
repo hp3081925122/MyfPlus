@@ -29,7 +29,6 @@ public final class Myfplus {
         MyfItems.TABS.register(bus);
         bus.addListener(Myfplus::attributes);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MyfConfig.COMMON_SPEC, "myfplus-common.toml");
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, MyfConfig.CLIENT_SPEC, "myfplus-client.toml");
     }
 
     private static void attributes(EntityAttributeCreationEvent e) {

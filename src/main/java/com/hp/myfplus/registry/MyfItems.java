@@ -39,9 +39,9 @@ public final class MyfItems {
     public static final RegistryObject<Item> RESONANT_CLAPPER = trophy("resonant_clapper");
     public static final RegistryObject<Item> HOUSE_GILDED_DIE = trophy("house_gilded_die");
     public static final RegistryObject<Item> SUNSET_ROSE = trophy("sunset_rose");
-    public static final RegistryObject<Item> FOSSIL_FANG_BRACELET = accessory("fossil_fang_bracelet", () -> new Object[]{pct(MyfConfig.FANG_CHANCE.get()), fmt(MyfConfig.FANG_BASE.get()), pct(MyfConfig.FANG_SCALE.get()), fmt(MyfConfig.FANG_SLOW.get() / 20.0)}, null);
-    public static final RegistryObject<Item> RESONANT_BELT_BELL = accessory("resonant_belt_bell", () -> new Object[]{MyfConfig.BELL_HITS.get(), fmt(MyfConfig.BELL_RADIUS.get()), pct(MyfConfig.BELL_RATIO.get())}, null);
-    public static final RegistryObject<Item> HOUSE_DIE_RING = accessory("house_die_ring", () -> new Object[]{pct(1 - MyfConfig.DIE_LOW.get()), pct(MyfConfig.DIE_STEP.get()), pct(MyfConfig.DIE_HIGH.get() - 1), fmt(MyfConfig.DIE_LUCK.get())}, MyfConfig.DIE_LUCK::get);
+    public static final RegistryObject<Item> FOSSIL_FANG_BRACELET = accessory("fossil_fang_bracelet", () -> new Object[]{pct(MyfConfig.FANG_CHANCE.get()), fmt(MyfConfig.FANG_RADIUS.get()), fmt(MyfConfig.FANG_BASE.get()), pct(MyfConfig.FANG_SCALE.get()), fmt(MyfConfig.FANG_COOLDOWN.get() / 20.0)}, null);
+    public static final RegistryObject<Item> RESONANT_BELT_BELL = accessory("resonant_belt_bell", () -> new Object[]{MyfConfig.BELL_HITS.get(), pct(MyfConfig.BELL_RATIO.get())}, null);
+    public static final RegistryObject<Item> HOUSE_DIE_RING = accessory("house_die_ring", () -> new Object[]{pct(MyfConfig.DIE_CHANCE.get()), fmt(MyfConfig.DIE_BASE.get()), pct(MyfConfig.DIE_SCALE.get()), fmt(MyfConfig.DIE_COOLDOWN.get() / 20.0), fmt(MyfConfig.DIE_LUCK.get())}, MyfConfig.DIE_LUCK::get);
     public static final RegistryObject<Item> SUNSET_ROSE_CLOAK = accessory("sunset_rose_cloak", () -> new Object[]{fmt(MyfConfig.CLOAK_BASE.get()), pct(MyfConfig.CLOAK_SCALE.get()), fmt(MyfConfig.CLOAK_STUN.get() / 20.0), fmt(MyfConfig.CLOAK_COOLDOWN.get() / 20.0)}, null);
 
     public static final RegistryObject<CreativeModeTab> TAB = TABS.register("main", () -> CreativeModeTab.builder()

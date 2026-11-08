@@ -1,48 +1,44 @@
 package com.hp.myfplus.entity.boss;
 
-import javax.annotation.Nullable;
-
 import com.hp.myfplus.Myfplus;
-import com.hp.myfplus.boss.fortuna.FortunaBrain;
+import com.hp.myfplus.boss.FortunaSkills;
 import com.hp.myfplus.config.MyfConfig;
-import com.hp.myfplus.core.BossBrain;
-import com.hp.myfplus.core.MyfBossHost;
+import com.hp.myfplus.core.EnhancedBoss;
+import com.hp.myfplus.core.Pacer;
+import com.hp.myfplus.core.Shots;
+import com.hp.myfplus.core.SkillRunner;
 import com.hp.myfplus.mixin.DameFortunaAccessor;
 import com.hp.myfplus.registry.MyfEntities;
 
 import lykrast.meetyourfight.entity.DameFortunaEntity;
-import net.minecraft.resources.ResourceLocation;
+import lykrast.meetyourfight.registry.MYFSounds;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.syncher.EntityDataAccessor;
-import net.minecraft.network.syncher.EntityDataSerializers;
-import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.event.ForgeEventFactory;
 
-public class EnhancedFortunaEntity extends DameFortunaEntity implements MyfBossHost {
-    private static final EntityDataAccessor<Integer> SKILL = SynchedEntityData.defineId(EnhancedFortunaEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> SKILL_START = SynchedEntityData.defineId(EnhancedFortunaEntity.class, EntityDataSerializers.INT);
-    private static final EntityDataAccessor<Integer> PHASE = SynchedEntityData.defineId(EnhancedFortunaEntity.class, EntityDataSerializers.INT);
-    private static final int ATK_CHIPS_CIRCLE = 2;
-    @Nullable
-    private FortunaBrain brain;
+public class EnhancedFortunaEntity extends DameFortunaEntity implements EnhancedBoss {
+    private final SkillRunner runner;
+    private final Pacer pacer = new Pacer();
+    private boolean phase2;
 
     public EnhancedFortunaEntity(EntityType<? extends EnhancedFortunaEntity> type, Level level) {
         super(type, level);
-        if (level.isClientSide || !MyfConfig.FORTUNA.enabled()) return;
-        brain = new FortunaBrain(this);
-        brain.install(goalSelector);
+        runner = new SkillRunner(this, () -> {
+            setAnimation(ANIM_IDLE);
+            acc().myfplus$setAttackCooldown(50 + random.nextInt(21));
+        });
+        FortunaSkills.register(this, runner);
+        goalSelector.addGoal(3, runner);
     }
 
     public static void spawn(Player player, ServerLevel level) {
@@ -50,80 +46,72 @@ public class EnhancedFortunaEntity extends DameFortunaEntity implements MyfBossH
         if (dame == null) return;
         RandomSource r = player.getRandom();
         dame.moveTo(player.getX() + r.nextInt(5) - 2, player.getY() + r.nextInt(3) + 3, player.getZ() + r.nextInt(5) - 2, r.nextFloat() * 360 - 180, 0);
-        ((DameFortunaAccessor) dame).myfplus$setAttackCooldown(100);
-        ((DameFortunaAccessor) dame).myfplus$setNextAttack(ATK_CHIPS_CIRCLE);
+        dame.acc().myfplus$setAttackCooldown(80);
+        dame.acc().myfplus$setNextAttack(2);
         if (!player.getAbilities().instabuild) dame.setTarget(player);
         dame.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 100, 2));
         ForgeEventFactory.onFinalizeSpawn(dame, level, level.getCurrentDifficultyAt(dame.blockPosition()), MobSpawnType.EVENT, null, null);
         level.addFreshEntity(dame);
     }
 
-    @Override
-    public boolean hurt(DamageSource source, float amount) {
-        FortunaBrain b = brain;
-        if (b == null || source.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return super.hurt(source, amount);
-        if (!b.betting) return super.hurt(source, b.director.isRunning(b.slot) ? amount * 0.5f : amount);
-        if (source.getEntity() instanceof LivingEntity attacker && attacker != this && amount > 0) {
-            b.bet += amount;
-            playSound(SoundEvents.CHAIN_PLACE, 1.0f, 1.2f + Math.min(0.8f, b.bet / Math.max(1f, getMaxHealth() * 0.15f)));
-        }
-        return false;
+    private DameFortunaAccessor acc() {
+        return (DameFortunaAccessor) (Object) this;
+    }
+
+    public int myfplus$extraDice() {
+        return phase2 ? 2 : 1;
+    }
+
+    public double myfplus$spinSpeed() {
+        return phase2 ? 1.6 : 1.4;
+    }
+
+    public double myfplus$spinInterval() {
+        return phase2 ? 0.6 : 0.7;
     }
 
     @Override
-    protected void defineSynchedData() {
-        super.defineSynchedData();
-        entityData.define(SKILL, 0);
-        entityData.define(SKILL_START, 0);
-        entityData.define(PHASE, 1);
+    public void customServerAiStep() {
+        super.customServerAiStep();
+        int cd = acc().myfplus$getAttackCooldown();
+        int next = pacer.step(this, runner, cd, Pacer.extra(phase2 ? 0.42 : 0.6, myfplus$cfg().cooldown()), isAttackPhase(), myfplus$cfg().chance(), phase2);
+        if (next != cd) acc().myfplus$setAttackCooldown(next);
+    }
+
+    @Override
+    public MyfConfig.BossCfg myfplus$cfg() {
+        return MyfConfig.FORTUNA;
+    }
+
+    @Override
+    public boolean myfplus$phase2() {
+        return phase2;
+    }
+
+    @Override
+    public void myfplus$enterPhase2() {
+        phase2 = true;
+        setPhase(PHASE_3);
+        acc().myfplus$setPhaseField(PHASE_3);
+        setAnimation(ANIM_IDLE);
+        acc().myfplus$setAttackCooldown(40);
+        addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 40, 4));
+        playSound(MYFSounds.dameFortunaClap.get(), 3.0f, 0.8f);
+        playSound(SoundEvents.TOTEM_USE, 1.5f, 1.2f);
+        Shots.particles(level(), ParticleTypes.ENCHANTED_HIT, position().add(0, 1.2, 0), 60, 1.5, 0.3);
+        Shots.particles(level(), ParticleTypes.HAPPY_VILLAGER, position().add(0, 1.2, 0), 30, 1.5, 0.1);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
-        if (brain == null) return;
-        CompoundTag t = new CompoundTag();
-        brain.save(t);
-        tag.put("myfplus", t);
+        tag.putBoolean("myfplus_phase2", phase2);
     }
 
     @Override
     public void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        if (brain != null && tag.contains("myfplus")) brain.load(tag.getCompound("myfplus"));
-    }
-
-    @Override
-    public int myfplus$skill() {
-        return entityData.get(SKILL);
-    }
-
-    @Override
-    public int myfplus$skillAge() {
-        return (int) level().getGameTime() - entityData.get(SKILL_START);
-    }
-
-    @Override
-    public void myfplus$setSkill(int skill) {
-        if (entityData.get(SKILL) == skill) return;
-        entityData.set(SKILL, skill);
-        entityData.set(SKILL_START, (int) level().getGameTime());
-    }
-
-    @Override
-    public int myfplus$phase() {
-        return entityData.get(PHASE);
-    }
-
-    @Override
-    public void myfplus$setPhase(int phase) {
-        entityData.set(PHASE, phase);
-    }
-
-    @Override
-    @Nullable
-    public BossBrain<?> myfplus$brain() {
-        return brain;
+        phase2 = tag.getBoolean("myfplus_phase2");
     }
 
     @Override

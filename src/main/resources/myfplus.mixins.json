@@ -5,14 +5,19 @@
   "compatibilityLevel": "JAVA_17",
   "refmap": "myfplus.refmap.json",
   "mixins": [
+    "BellringerBurstMixin",
+    "BellringerRageMixin",
     "DameFortunaAccessor",
     "DameFortunaEntityMixin",
+    "FortunaDiceMixin",
+    "FortunaSpinMixin",
     "RosalyneAccessor",
-    "RosalyneEntityMixin"
-  ],
-  "client": [
-    "client.LivingEntityRendererMixin",
-    "client.SwampjawModelAccessor"
+    "RosalyneCrashMixin",
+    "RosalyneDashMixin",
+    "RosalyneSwingMixin",
+    "SwampjawAccessor",
+    "SwampjawMoveMixin",
+    "SwampjawPickMixin"
   ],
   "injectors": {
     "defaultRequire": 1
