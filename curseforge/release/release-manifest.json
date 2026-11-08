@@ -1,0 +1,33 @@
+{
+  "files": [
+    {
+      "minecraft": "1.20.1",
+      "artifact": "E:\\模组\\发cf的模组\\AAA生物\\迎战增强\\1201-forge-MyfPlus\\build\\libs\\myfplus-1.20.1-forge-0.1.0.jar",
+      "sha256": "3bb157a19df233f9cd093e700394b3a946d8f7765065fad697804ea689335026",
+      "metadata": {
+        "changelog": "## Meet Your Fight Plus 0.1.0\n\nFirst release, for Minecraft 1.20.1 (Forge). Requires Meet Your Fight and Curios API.\n\n- Enhanced versions of all four Meet Your Fight bosses: Ancient Swampjaw, Resonant Bellringer, High-Roller Dame Fortuna and Rosalyne, Blade of Sunset. Each has a new two-phase moveset and its own pixel-art effects. The original bosses are unchanged.\n- Four new summon items, crafted only from the original bosses' drops.\n- Enhanced bosses drop the original boss loot plus one exclusive trophy.\n- Four Curios accessories made from the trophies: Fossil Fang Bracelet, Resonant Belt Bell, House Die Ring and Sunset Rose Cloak.\n- Own creative tab. Skill damage, cooldowns, skill parameters and accessory values are configurable in `myfplus-common.toml`; screen shake, boss fog and phase banners in `myfplus-client.toml`.\n\n---\n\n## 迎战增强 0.1.0（首次发布）\n\n适用于 Minecraft 1.20.1（Forge）。前置：Meet Your Fight、Curios API。\n\n- 为迎战的四个 Boss 各加入强化版：远古沼泽巨颌怪、万钟敲钟人、豪赌福尔图娜女爵、落日之锋罗莎琳。每个都有全新的两阶段技能组和专属像素特效。本体 Boss 保持原样。\n- 新增 4 个召唤物，只能用本体 Boss 的掉落物合成。\n- 强化 Boss 掉落本体 Boss 的全部掉落物，另外固定掉落 1 个专属物品。\n- 专属物品可合成 4 件 Curios 饰品：化石獠牙手镯、共鸣腰铃、庄家骰戒、落日玫瑰披风。\n- 独立的创造物品栏。技能伤害、冷却、技能参数和饰品数值可在 `myfplus-common.toml` 中配置；镜头震动、Boss 雾气和阶段横幅可在 `myfplus-client.toml` 中开关。\n",
+        "changelogType": "markdown",
+        "displayName": "1.20.1-Forge-Meet Your Fight Plus-0.1.0",
+        "releaseType": "release",
+        "gameVersionNames": [
+          "1.20.1",
+          "Forge",
+          "Client",
+          "Server"
+        ],
+        "relations": {
+          "projects": [
+            {
+              "slug": "meet-your-fight",
+              "type": "requiredDependency"
+            },
+            {
+              "slug": "curios",
+              "type": "requiredDependency"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
