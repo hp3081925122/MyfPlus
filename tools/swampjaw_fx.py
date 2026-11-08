@@ -434,26 +434,44 @@ def charge():
     return stack(frames)
 
 
-# ---------- 高压水束（条带，横向为宽度，纵向沿长度平铺，2 帧）----------
-def beam(fi):
-    c = C(8, 8)
-    cols = ["w1", "w2", "w3", "w4", "w4", "w3", "w2", "w1"]
-    for y in range(8):
-        for x in range(8):
-            col = cols[x]
-            if x in (0, 7):
-                col = "w1" if (y + fi + x) % 3 else ("w0" if (y + fi) % 2 else None)
-            elif x in (1, 6) and (y + 2 * fi) % 4 == 0:
-                col = "w3"
-            elif x in (2, 5) and (y + 2 * fi) % 4 == 2:
-                col = "w4"
-            elif x in (3, 4) and (y + 2 * fi + x) % 4 == 1:
-                col = "w3"
-            c.px[y][x] = col
-    return c.image()
+# ---------- 化石骨刺（竖直贴片 1×2 格，尖端朝下，3 个变体按 count 取帧）----------
+def bone_spike():
+    frames = []
+    for hw, lean, top, seg in ((3.6, 0.0, 3, 4), (3.0, 1.6, 5, 2), (4.0, -1.4, 2, 5)):
+        c = C(16, 32)
+
+        def f(px, py, hw=hw, lean=lean, top=top, seg=seg):
+            if py < top or py > 31:
+                return None
+            t = (py - top) / (31 - top)
+            cx = 8 + lean * (t - 0.5)
+            w = hw * (1 - t ** 1.25) + 0.45
+            if t < 0.1:
+                w *= 0.8 + t * 2
+            dx = px - cx
+            if abs(dx) > w:
+                return None
+            rel = dx / w
+            if t < 0.06 and int(px) % 3 == 0:
+                return None
+            if int(py - top) % 7 == seg and abs(rel) < 0.8 and t < 0.8:
+                return "b0"
+            if rel < -0.45:
+                return "b3" if t < 0.45 else "b2"
+            if rel > 0.4:
+                return "b0"
+            return "b2" if rel < -0.1 and t < 0.6 else "b1"
+
+        c.fill(f)
+        for x in range(16):
+            if c.get(x, top):
+                c.set(x, top, "b0")
+        c.outline()
+        frames.append(c)
+    return stack(frames)
 
 
-# ---------- 水束落点水花（竖直贴片，5 帧）----------
+# ---------- 落点水花（竖直贴片，5 帧）----------
 def spout():
     frames = []
     for fi, h in enumerate([5, 12, 18, 15, 8]):
@@ -623,8 +641,7 @@ def main():
         "fx/swampjaw/breach": breach(),
         "fx/swampjaw/maw": maw(),
         "fx/swampjaw/charge": charge(),
-        "fx/swampjaw/beam_0": beam(0),
-        "fx/swampjaw/beam_1": beam(1),
+        "fx/swampjaw/bone_spike": bone_spike(),
         "fx/swampjaw/spout": spout(),
         "fx/swampjaw/swipe": swipe(),
         "fx/swampjaw/roar": roar(),

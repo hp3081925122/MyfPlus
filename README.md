@@ -2,8 +2,9 @@
 
 [Meet Your Fight](https://www.curseforge.com/minecraft/mc-mods/meet-your-fight) 的 Boss 增强附属，Minecraft 1.20.1 Forge（47.4.23，Java 17）。
 
-- 沼牙：用「远古化石之饵」召唤强化版。合成材料为化石之饵、苔藓之牙、2 个海晶碎片和 4 根骨头。本体化石之饵仍然召唤原版沼牙。
-- 敲钟人、命运夫人、罗莎琳：技能与像素特效重做。
+- 为四个本体 Boss 各加入强化版（远古沼泽巨颌怪、万钟敲钟人、豪赌福尔图娜女爵、落日之锋罗莎琳），技能与像素特效全部重做；本体 Boss 不受影响。
+- 强化版召唤物只用本体 Boss 掉落物合成；强化 Boss 额外掉落专属物品，可合成 4 件 Curios 饰品。
+- 前置：Meet Your Fight、Curios API。
 - 设计说明见 `docs/设计文档-Boss技能与特效.md`。
 
 ## 构建
@@ -14,7 +15,7 @@ $env:JAVA_HOME = 'C:\Users\30819\.jdks\ms-17.0.18'
 .\gradlew.bat runClient
 ```
 
-沼牙特效贴图由 `python tools/swampjaw_fx.py` 生成（需要 Pillow）。
+特效贴图由 `tools/` 下的 Python 脚本生成（需要 Pillow）。CurseForge 项目资料在 `curseforge/`。
 
 ## 许可
 

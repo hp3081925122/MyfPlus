@@ -86,6 +86,10 @@ public final class Combat {
         return new Vec3(-Math.sin(r), 0, Math.cos(r));
     }
 
+    public static boolean stuck(Mob mob) {
+        return !mob.level().noCollision(mob, mob.getBoundingBox().deflate(0.1));
+    }
+
     public static boolean inGroundBand(Level level, LivingEntity e, double groundY, double height) {
         return e.getY() >= groundY - 0.6 && e.getY() <= groundY + height;
     }

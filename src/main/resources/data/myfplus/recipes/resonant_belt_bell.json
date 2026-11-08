@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "Y Y",
+    " X "
+  ],
+  "key": {
+    "X": {
+      "item": "myfplus:resonant_clapper"
+    },
+    "Y": {
+      "item": "meetyourfight:phantoplasm"
+    }
+  },
+  "result": {
+    "item": "myfplus:resonant_belt_bell"
+  }
+}

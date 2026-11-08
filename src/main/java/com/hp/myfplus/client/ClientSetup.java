@@ -9,6 +9,11 @@ import com.hp.myfplus.client.render.SwampjawRenderers;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.registry.MyfEntities;
 
+import lykrast.meetyourfight.renderer.BellringerRenderer;
+import lykrast.meetyourfight.renderer.DameFortunaRenderer;
+import lykrast.meetyourfight.renderer.RosalyneRenderer;
+import lykrast.meetyourfight.renderer.SwampjawRenderer;
+
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
@@ -28,12 +33,15 @@ public final class ClientSetup {
 
     @SubscribeEvent
     public static void overlays(RegisterGuiOverlaysEvent e) {
-        e.registerBelowAll("rosalyne_dusk", ClientFx::renderDusk);
         e.registerAboveAll("boss_banner", ClientFx::renderBanner);
     }
 
     @SubscribeEvent
     public static void renderers(EntityRenderersEvent.RegisterRenderers e) {
+        e.registerEntityRenderer(MyfEntities.ENHANCED_SWAMPJAW.get(), SwampjawRenderer::new);
+        e.registerEntityRenderer(MyfEntities.ENHANCED_BELLRINGER.get(), BellringerRenderer::new);
+        e.registerEntityRenderer(MyfEntities.ENHANCED_FORTUNA.get(), DameFortunaRenderer::new);
+        e.registerEntityRenderer(MyfEntities.ENHANCED_ROSALYNE.get(), RosalyneRenderer::new);
         e.registerEntityRenderer(MyfEntities.FX.get(), FxEntityRenderer::new);
         e.registerEntityRenderer(MyfEntities.FOSSIL_JAW.get(), SwampjawRenderers.Jaw::new);
         e.registerEntityRenderer(MyfEntities.FIN_BLADE.get(), SwampjawRenderers.Fin::new);

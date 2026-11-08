@@ -31,7 +31,8 @@ public class TailSkill extends BossSkill {
 
     @Override
     public boolean canUse(LivingEntity target, double dist) {
-        return dist <= 5;
+        double dy = b.boss.getY() - target.getY();
+        return dist <= 5 && dy >= -2 && dy <= 3.5 && !Combat.stuck(b.boss);
     }
 
     @Override

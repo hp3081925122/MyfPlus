@@ -58,8 +58,7 @@ public class RosalyneBrain extends BossBrain<RosalyneEntity> {
     @Nullable
     public DuelRingEntity ring;
     private boolean introDone;
-    private boolean corollaQueued;
-    private boolean arenaQueued;
+    private boolean transitionQueued;
     private int noTarget;
 
     public RosalyneBrain(RosalyneEntity boss) {
@@ -85,8 +84,7 @@ public class RosalyneBrain extends BossBrain<RosalyneEntity> {
 
     @Override
     public int globalGap() {
-        int gap = 22 + boss.getRandom().nextInt(16);
-        return act >= 3 ? (int) (gap * 0.7) : gap;
+        return 22 + boss.getRandom().nextInt(16);
     }
 
     @Override
@@ -99,14 +97,6 @@ public class RosalyneBrain extends BossBrain<RosalyneEntity> {
         if (!introDone && target != null) {
             introDone = true;
             Fx.banner(boss.level(), boss.position(), Fx.BOSS_ROSALYNE, act);
-        }
-        if (act == 1 && !corollaQueued && hpRatio() < 0.5f) {
-            corollaQueued = true;
-            director.force(corolla);
-        }
-        if (act == 2 && !arenaQueued && hpRatio() < 0.2f) {
-            arenaQueued = true;
-            director.force(arena);
         }
         petals.removeIf(Entity::isRemoved);
         if (act >= 2 && !invulnerable) {
@@ -133,6 +123,17 @@ public class RosalyneBrain extends BossBrain<RosalyneEntity> {
             }
             else noTarget = 0;
         }
+    }
+
+    @Override
+    public boolean firstPhase() {
+        return act == 1 && !transitionQueued && boss.getPhase() == RosalyneEntity.PHASE_1;
+    }
+
+    @Override
+    protected void enterSecondPhase() {
+        transitionQueued = true;
+        director.force(corolla);
     }
 
     public int orbiting() {
@@ -211,16 +212,16 @@ public class RosalyneBrain extends BossBrain<RosalyneEntity> {
 
     @Override
     public void save(CompoundTag tag) {
-        tag.putInt("act", act);
+        tag.putInt("act", transitionQueued ? 2 : act);
         tag.putBoolean("intro", introDone);
     }
 
     @Override
     public void load(CompoundTag tag) {
-        act = Math.max(1, tag.getInt("act"));
+        act = Mth.clamp(tag.getInt("act"), 1, 2);
         introDone = tag.getBoolean("intro");
-        corollaQueued = act >= 2;
-        arenaQueued = act >= 3;
+        transitionQueued = act >= 2;
+        if (act >= 2) boss.setPhase(RosalyneEntity.PHASE_3);
         restoreAfterLoad = true;
     }
 
@@ -229,11 +230,40 @@ public class RosalyneBrain extends BossBrain<RosalyneEntity> {
     private void restore(@Nullable LivingEntity target) {
         restoreAfterLoad = false;
         if (act >= 2) for (int s = 0; s < 8; s++) addPetal(s);
-        if (act >= 3 && target != null) spawnRing(groundAt(boss.position().add(target.position()).scale(0.5)), MyfConfig.DUEL_RADIUS.get());
+        if (act >= 2 && target != null) spawnRing(groundAt(boss.position().add(target.position()).scale(0.5)), MyfConfig.DUEL_RADIUS.get());
     }
 
     public Vec3 groundAt(Vec3 p) {
         return new Vec3(p.x, GroundProbe.under(boss.level(), p.x, p.z, p.y + 0.5), p.z);
+    }
+
+    public boolean fits(Vec3 p) {
+        return boss.level().noCollision(boss, boss.getDimensions(boss.getPose()).makeBoundingBox(p).deflate(0.1));
+    }
+
+    @Nullable
+    public Vec3 standAt(double x, double z, double refY) {
+        double gy = GroundProbe.top(boss.level(), x, z, refY + 1, 1, 3);
+        if (Double.isNaN(gy) || Math.abs(gy - refY) > 1.5) return null;
+        Vec3 p = new Vec3(x, gy, z);
+        return fits(p) ? p : null;
+    }
+
+    @Nullable
+    public Vec3 meleeSpot(LivingEntity target, double dist) {
+        Vec3 tp = target.position();
+        float base = Combat.yawTo(tp, boss.position());
+        for (int i = 0; i < 8; i++) {
+            float yaw = base + (i % 2 == 0 ? 1 : -1) * ((i + 1) / 2) * 45f;
+            Vec3 d = Combat.dirFromYaw(yaw);
+            Vec3 p = standAt(tp.x + d.x * dist, tp.z + d.z * dist, tp.y);
+            if (p != null) return p;
+        }
+        return null;
+    }
+
+    public boolean levelWith(LivingEntity target, double maxDy) {
+        return Math.abs(boss.getY() - target.getY()) <= maxDy && !Combat.stuck(boss);
     }
 
     public void place(Vec3 p) {

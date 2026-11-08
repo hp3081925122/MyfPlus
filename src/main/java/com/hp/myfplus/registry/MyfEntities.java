@@ -15,6 +15,10 @@ import com.hp.myfplus.entity.RouletteEntity;
 import com.hp.myfplus.entity.SlotMachineEntity;
 import com.hp.myfplus.entity.EchoMarkEntity;
 import com.hp.myfplus.entity.PhantomBellEntity;
+import com.hp.myfplus.entity.boss.EnhancedBellringerEntity;
+import com.hp.myfplus.entity.boss.EnhancedFortunaEntity;
+import com.hp.myfplus.entity.boss.EnhancedRosalyneEntity;
+import com.hp.myfplus.entity.boss.EnhancedSwampjawEntity;
 import com.hp.myfplus.fx.FxEntity;
 
 import net.minecraft.world.entity.Entity;
@@ -26,6 +30,11 @@ import net.minecraftforge.registries.RegistryObject;
 
 public final class MyfEntities {
     public static final DeferredRegister<EntityType<?>> REG = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, Myfplus.MOD_ID);
+
+    public static final RegistryObject<EntityType<EnhancedSwampjawEntity>> ENHANCED_SWAMPJAW = boss("enhanced_swampjaw", EnhancedSwampjawEntity::new, 2.6f, 1.6f);
+    public static final RegistryObject<EntityType<EnhancedBellringerEntity>> ENHANCED_BELLRINGER = boss("enhanced_bellringer", EnhancedBellringerEntity::new, 0.6f, 1.95f);
+    public static final RegistryObject<EntityType<EnhancedFortunaEntity>> ENHANCED_FORTUNA = boss("enhanced_dame_fortuna", EnhancedFortunaEntity::new, 0.6f, 2.325f);
+    public static final RegistryObject<EntityType<EnhancedRosalyneEntity>> ENHANCED_ROSALYNE = boss("enhanced_rosalyne", EnhancedRosalyneEntity::new, 0.6f, 1.95f);
 
     public static final RegistryObject<EntityType<FxEntity>> FX = misc("fx", FxEntity::new, 0.2f, 0.2f, 20);
     public static final RegistryObject<EntityType<FossilJawEntity>> FOSSIL_JAW = misc("fossil_jaw", FossilJawEntity::new, 0.5f, 0.2f, 100);
@@ -44,6 +53,11 @@ public final class MyfEntities {
     public static final RegistryObject<EntityType<DuelRingEntity>> DUEL_RING = misc("duel_ring", DuelRingEntity::new, 0.5f, 0.5f, 40);
 
     private MyfEntities() {
+    }
+
+    private static <T extends Entity> RegistryObject<EntityType<T>> boss(String name, EntityType.EntityFactory<T> factory, float w, float h) {
+        return REG.register(name, () -> EntityType.Builder.of(factory, MobCategory.MONSTER).sized(w, h).setUpdateInterval(1).setTrackingRange(128)
+                .setShouldReceiveVelocityUpdates(true).build(Myfplus.MOD_ID + ":" + name));
     }
 
     private static <T extends Entity> RegistryObject<EntityType<T>> misc(String name, EntityType.EntityFactory<T> factory, float w, float h, int interval) {

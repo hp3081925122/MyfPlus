@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "RVR",
+    "ADA",
+    "RVR"
+  ],
+  "key": {
+    "R": {
+      "item": "minecraft:rose_bush"
+    },
+    "V": {
+      "item": "meetyourfight:violet_bloom"
+    },
+    "A": {
+      "item": "minecraft:allium"
+    },
+    "D": {
+      "item": "meetyourfight:dusk_key"
+    }
+  },
+  "result": {
+    "item": "myfplus:sunset_dusk_key"
+  }
+}

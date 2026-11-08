@@ -27,11 +27,6 @@ public abstract class RosaSkill extends BossSkill {
     }
 
     @Override
-    public double cooldownScale() {
-        return b.act >= 3 ? 0.7 : 1.0;
-    }
-
-    @Override
     public void start(LivingEntity target) {
         stage = 0;
         st = 0;

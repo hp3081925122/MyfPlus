@@ -12,7 +12,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
-/** P2 转换「古颌苏醒」：50% 血时升空咆哮，期间免伤；爆发时整圈方块浪、冲击波、第二幕横幅与沼泽雾。 */
+/** P2 转换「古颌苏醒」：一阶段受到致命伤时回满血，升空咆哮，期间免伤；爆发时整圈方块浪、冲击波、第二幕横幅与沼泽雾。 */
 public class AwakenSkill extends BossSkill {
     private static final int BURST = 24;
     private final SwampjawBrain b;

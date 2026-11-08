@@ -1,12 +1,16 @@
 package com.hp.myfplus;
 
 import com.hp.myfplus.config.MyfConfig;
+import com.hp.myfplus.registry.MyfEffects;
 import com.hp.myfplus.registry.MyfEntities;
 import com.hp.myfplus.registry.MyfItems;
 
-import lykrast.meetyourfight.registry.MYFEntities;
+import lykrast.meetyourfight.entity.BellringerEntity;
+import lykrast.meetyourfight.entity.DameFortunaEntity;
+import lykrast.meetyourfight.entity.RosalyneEntity;
+import lykrast.meetyourfight.entity.SwampjawEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraftforge.event.entity.EntityAttributeModificationEvent;
+import net.minecraftforge.event.entity.EntityAttributeCreationEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
@@ -21,14 +25,17 @@ public final class Myfplus {
         IEventBus bus = context.getModEventBus();
         MyfEntities.REG.register(bus);
         MyfItems.REG.register(bus);
-        bus.addListener(MyfItems::tabs);
+        MyfEffects.REG.register(bus);
+        MyfItems.TABS.register(bus);
         bus.addListener(Myfplus::attributes);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, MyfConfig.COMMON_SPEC, "myfplus-common.toml");
         ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, MyfConfig.CLIENT_SPEC, "myfplus-client.toml");
     }
 
-    private static void attributes(EntityAttributeModificationEvent e) {
-        if (!e.has(MYFEntities.BELLRINGER.get(), Attributes.ATTACK_DAMAGE)) e.add(MYFEntities.BELLRINGER.get(), Attributes.ATTACK_DAMAGE, 10);
-        if (!e.has(MYFEntities.DAME_FORTUNA.get(), Attributes.ATTACK_DAMAGE)) e.add(MYFEntities.DAME_FORTUNA.get(), Attributes.ATTACK_DAMAGE, 16);
+    private static void attributes(EntityAttributeCreationEvent e) {
+        e.put(MyfEntities.ENHANCED_SWAMPJAW.get(), SwampjawEntity.createAttributes().build());
+        e.put(MyfEntities.ENHANCED_BELLRINGER.get(), BellringerEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 10).build());
+        e.put(MyfEntities.ENHANCED_FORTUNA.get(), DameFortunaEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 16).build());
+        e.put(MyfEntities.ENHANCED_ROSALYNE.get(), RosalyneEntity.createAttributes().build());
     }
 }

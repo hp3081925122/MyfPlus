@@ -38,7 +38,7 @@ public class WaltzSkill extends RosaSkill {
 
     @Override
     protected boolean usable(LivingEntity target, double dist) {
-        return b.act >= 3 && dist <= 24;
+        return b.act >= 2 && dist <= 24;
     }
 
     @Override
@@ -72,7 +72,7 @@ public class WaltzSkill extends RosaSkill {
                     boss.playSound(SoundEvents.ILLUSIONER_CAST_SPELL, 2.5f, 0.6f);
                     boss.playSound(SoundEvents.BEACON_ACTIVATE, 2.0f, 0.5f);
                 }
-                if (st == 10) FxEntity.at(boss.level(), FxType.RS_SUNSET, center.add(0, 7.5, 0)).size(2.4f).life(DASHES * 34 + 50).spawn();
+                if (st == 10) FxEntity.at(boss.level(), FxType.RS_SUNSET, center.add(0, 7.5, 0)).size(1.8f).life(DASHES * 34 + 50).spawn();
                 if (st >= 22) next();
             }
             case 1 -> {

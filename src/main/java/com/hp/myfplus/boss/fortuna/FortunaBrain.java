@@ -30,7 +30,6 @@ import net.minecraft.world.phys.Vec3;
 
 public class FortunaBrain extends BossBrain<DameFortunaEntity> {
     private static final Set<String> REMOVED = Set.of("DoTheShuffle", "WaitShuffle", "SpinAttack", "DiceAttack", "ChipsAttack");
-    public static final float[] RESET = {5f / 6f, 0.5f, 13f / 60f};
     public static final UUID ARMOR_BREAK = UUID.fromString("5f0d1c8e-6b8a-4f0e-9a3c-7d1e2b4c6a02");
 
     public final DiceSkill dice;
@@ -66,8 +65,17 @@ public class FortunaBrain extends BossBrain<DameFortunaEntity> {
     }
 
     public int act() {
-        int p = boss.getPhase();
-        return p >= DameFortunaEntity.PHASE_3 ? 3 : p >= DameFortunaEntity.PHASE_2 ? 2 : 1;
+        return boss.getPhase() >= DameFortunaEntity.PHASE_2 ? 2 : 1;
+    }
+
+    @Override
+    public boolean firstPhase() {
+        return boss.getPhase() == DameFortunaEntity.PHASE_1;
+    }
+
+    @Override
+    protected void enterSecondPhase() {
+        boss.setPhase(DameFortunaEntity.SHUFFLE_1);
     }
 
     @Override
@@ -145,21 +153,30 @@ public class FortunaBrain extends BossBrain<DameFortunaEntity> {
     public void throwDice(LivingEntity target, int count, int minValue) {
         RandomSource r = boss.getRandom();
         Vec3 from = hand();
-        float baseYaw = Combat.yawTo(from, target.position());
+        Vec3 v = target.getDeltaMovement();
+        Vec3 lead = new Vec3(v.x * 8, 0, v.z * 8);
+        double ring = r.nextDouble() * Math.PI * 2;
         for (int i = 0; i < count; i++) {
-            float yaw = baseYaw + (r.nextFloat() - 0.5f) * 60f;
-            Vec3 dir = Combat.dirFromYaw(yaw);
-            double dist = Math.max(2, boss.distanceTo(target) + (r.nextDouble() - 0.4) * 5);
-            Vec3 land = groundAt(new Vec3(from.x + dir.x * dist, target.getY(), from.z + dir.z * dist));
-            int ticks = 18 + r.nextInt(6);
-            double vx = (land.x - from.x) / ticks / 1.6, vz = (land.z - from.z) / ticks / 1.6;
+            Vec3 spread = Vec3.ZERO;
+            if (i > 0) {
+                double a = ring + (i - 1) * Math.PI * 2 / Math.max(1, count - 1) + (r.nextDouble() - 0.5) * 0.6;
+                double d = 1.4 + r.nextDouble() * 1.4;
+                spread = new Vec3(Math.cos(a) * d, 0, Math.sin(a) * d);
+            }
+            Vec3 land = groundAt(target.position().add(lead).add(spread).add(0, 1, 0));
+            int ticks = 14 + r.nextInt(5);
             double vy = (land.y - from.y + 0.5 * DiceEntity.GRAVITY * ticks * ticks) / ticks;
+            double f = DiceEntity.travel(from.y, vy, land.y, DiceEntity.BOUNCES);
+            Vec3 h = new Vec3(land.x - from.x, 0, land.z - from.z).scale(1 / f);
+            if (h.length() > 1.2) h = h.normalize().scale(1.2);
             DiceEntity d = new DiceEntity(MyfEntities.DICE.get(), boss.level());
             d.setPos(from.x, from.y, from.z);
             d.setOwner(boss);
+            d.target = target;
+            d.spread = spread;
             d.value = minValue + r.nextInt(7 - minValue);
             d.damage = Combat.damage(boss, cfg, 0.7);
-            d.setDeltaMovement(vx, vy, vz);
+            d.setDeltaMovement(h.x, vy, h.z);
             boss.level().addFreshEntity(d);
         }
         boss.playSound(SoundEvents.BONE_BLOCK_PLACE, 1.5f, 1.2f);

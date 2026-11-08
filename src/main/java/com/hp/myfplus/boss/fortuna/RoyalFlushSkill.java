@@ -33,7 +33,7 @@ public class RoyalFlushSkill extends FortunaSkill {
 
     @Override
     protected boolean usable(LivingEntity target, double dist) {
-        return b.act() >= 3 && dist <= 20;
+        return b.act() >= 2 && dist <= 20;
     }
 
     @Override

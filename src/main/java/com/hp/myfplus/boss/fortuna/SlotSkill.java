@@ -1,8 +1,12 @@
 package com.hp.myfplus.boss.fortuna;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nullable;
 
 import com.hp.myfplus.entity.SlotMachineEntity;
+import com.mojang.logging.LogUtils;
 import com.hp.myfplus.fx.Fx;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
@@ -10,9 +14,11 @@ import com.hp.myfplus.registry.MyfEntities;
 
 import lykrast.meetyourfight.entity.DameFortunaEntity;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 
 public class SlotSkill extends FortunaSkill {
+    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
     @Nullable
     private SlotMachineEntity machine;
     private int resultAt;
@@ -55,6 +61,9 @@ public class SlotSkill extends FortunaSkill {
             SlotMachineEntity m = new SlotMachineEntity(MyfEntities.SLOT_MACHINE.get(), boss.level());
             m.setOwner(boss);
             m.setPos(boss.getX(), boss.getY() + boss.getBbHeight() + 1, boss.getZ());
+            int[] rigged = rig(boss.getRandom());
+            m.rig(rigged);
+            LOGGER.debug("Fortuna slot rigged: {} {} {}", rigged[0], rigged[1], rigged[2]);
             boss.level().addFreshEntity(m);
             machine = m;
             boss.setAnimation(DameFortunaEntity.ANIM_CARD_WAIT);
@@ -80,10 +89,29 @@ public class SlotSkill extends FortunaSkill {
         return t > 300;
     }
 
+    private int[] rig(RandomSource r) {
+        int[] pool = {SlotMachineEntity.DICE, SlotMachineEntity.DICE, SlotMachineEntity.DICE, SlotMachineEntity.CHIP, SlotMachineEntity.CHIP, SlotMachineEntity.CHIP, SlotMachineEntity.SKULL, SlotMachineEntity.SKULL, SlotMachineEntity.HEART};
+        int s = pool[r.nextInt(pool.length)];
+        double roll = r.nextDouble();
+        double triple = b.act() >= 2 ? 0.45 : 0.30;
+        if (roll < triple) return new int[]{s, s, s};
+        if (roll < 0.90) {
+            int[] w = {s, s, s};
+            w[r.nextInt(3)] = (s + 1 + r.nextInt(SlotMachineEntity.SYMBOLS - 1)) % SlotMachineEntity.SYMBOLS;
+            return w;
+        }
+        List<Integer> all = new ArrayList<>();
+        for (int i = 0; i < SlotMachineEntity.SYMBOLS; i++) all.add(i);
+        int[] w = new int[3];
+        for (int i = 0; i < 3; i++) w[i] = all.remove(r.nextInt(all.size()));
+        return w;
+    }
+
     private void apply(@Nullable LivingEntity target) {
         DameFortunaEntity boss = b.boss;
         SlotMachineEntity m = machine;
         int[] s = {m.symbol(0), m.symbol(1), m.symbol(2)};
+        LOGGER.debug("Fortuna slot result: {} {} {}", s[0], s[1], s[2]);
         int best = -1, count = 1;
         for (int i = 0; i < 3; i++) {
             int c = 0;

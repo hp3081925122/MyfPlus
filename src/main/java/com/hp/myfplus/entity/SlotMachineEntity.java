@@ -19,6 +19,8 @@ public class SlotMachineEntity extends OwnedEntity {
     public static final int SPEED = 4;
     public static final int[] AUTO_STOP = {20, 35, 50};
     public static final double LIFT = 2.6;
+    public static final int SEEK = 15;
+    private final int[] want = {-1, -1, -1};
     @SuppressWarnings("unchecked")
     private static final EntityDataAccessor<Integer>[] STOP = new EntityDataAccessor[]{
             SynchedEntityData.defineId(SlotMachineEntity.class, EntityDataSerializers.INT),
@@ -33,6 +35,10 @@ public class SlotMachineEntity extends OwnedEntity {
     @Override
     protected void defineSynchedData() {
         for (EntityDataAccessor<Integer> s : STOP) entityData.define(s, -1);
+    }
+
+    public void rig(int[] symbols) {
+        System.arraycopy(symbols, 0, want, 0, 3);
     }
 
     public int stopTick(int reel) {
@@ -76,7 +82,10 @@ public class SlotMachineEntity extends OwnedEntity {
             discard();
             return;
         }
-        for (int i = 0; i < 3; i++) if (tickCount >= AUTO_STOP[i]) stop(i);
+        for (int i = 0; i < 3; i++) {
+            if (tickCount < AUTO_STOP[i]) continue;
+            if (want[i] < 0 || symbolAt(i, tickCount) == want[i] || tickCount >= AUTO_STOP[i] + SEEK) stop(i);
+        }
         if (tickCount % 3 == 0 && !allStopped()) level().playSound(null, getX(), getY(), getZ(), SoundEvents.NOTE_BLOCK_HAT.get(), SoundSource.HOSTILE, 0.5f, 1.8f);
     }
 

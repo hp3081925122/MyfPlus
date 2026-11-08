@@ -1,0 +1,25 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "EFE",
+    "BDB",
+    "EFE"
+  ],
+  "key": {
+    "E": {
+      "item": "minecraft:emerald"
+    },
+    "F": {
+      "item": "meetyourfight:fortunes_favor"
+    },
+    "B": {
+      "item": "minecraft:book"
+    },
+    "D": {
+      "item": "meetyourfight:devils_ante"
+    }
+  },
+  "result": {
+    "item": "myfplus:all_in_devils_ante"
+  }
+}

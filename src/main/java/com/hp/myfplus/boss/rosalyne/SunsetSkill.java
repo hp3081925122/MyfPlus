@@ -45,7 +45,7 @@ public class SunsetSkill extends RosaSkill {
     @Override
     protected void begin(LivingEntity target) {
         hit.clear();
-        cross = b.act >= 3;
+        cross = b.act >= 2;
         hoverAt = b.boss.position().add(0, 6, 0);
     }
 

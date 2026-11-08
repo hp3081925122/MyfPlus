@@ -1,5 +1,7 @@
 package com.hp.myfplus.entity;
 
+import javax.annotation.Nullable;
+
 import com.hp.myfplus.core.Combat;
 import com.hp.myfplus.core.GroundProbe;
 import com.hp.myfplus.fx.Fx;
@@ -21,9 +23,15 @@ import net.minecraft.world.phys.Vec3;
 public class DiceEntity extends OwnedEntity {
     public static final double GRAVITY = 0.06;
     public static final int FUSE = 15;
+    public static final double BOUNCE_KEEP = 0.6;
+    public static final double MAX_STEP = 0.6;
     private static final EntityDataAccessor<Integer> REST = SynchedEntityData.defineId(DiceEntity.class, EntityDataSerializers.INT);
     public int value = 1;
-    private int bounces = 3;
+    public static final int BOUNCES = 3;
+    private int bounces = BOUNCES;
+    @Nullable
+    public LivingEntity target;
+    public Vec3 spread = Vec3.ZERO;
 
     public DiceEntity(EntityType<? extends DiceEntity> type, Level level) {
         super(type, level);
@@ -64,11 +72,35 @@ public class DiceEntity extends OwnedEntity {
                 entityData.set(REST, tickCount);
                 FxEntity.at(level(), FxType.WARN_CIRCLE, next).size(radius()).life(FUSE).palette(2).spawn();
             }
-            else dm = new Vec3(dm.x * 0.6, -dm.y * 0.5, dm.z * 0.6);
+            else {
+                dm = new Vec3(dm.x * BOUNCE_KEEP, -dm.y * 0.5, dm.z * BOUNCE_KEEP);
+                if (target != null && target.isAlive() && !target.isRemoved()) {
+                    Vec3 aim = target.position().add(spread);
+                    Vec3 h = new Vec3(aim.x - next.x, 0, aim.z - next.z).scale(1 / travel(ground, dm.y, ground, bounces));
+                    if (h.length() > MAX_STEP) h = h.normalize().scale(MAX_STEP);
+                    dm = new Vec3(h.x, dm.y, h.z);
+                }
+            }
         }
         setDeltaMovement(dm);
         setPos(next);
         if (tickCount > 120 && restTick() < 0) explode();
+    }
+
+    public static double travel(double y, double vy, double ground, int bounces) {
+        double scale = 1, sum = 0;
+        for (int i = 0; i < 200; i++) {
+            vy -= GRAVITY;
+            y += vy;
+            sum += scale;
+            if (y <= ground) {
+                y = ground;
+                if (--bounces <= 0) return sum;
+                vy = -vy * 0.5;
+                scale *= BOUNCE_KEEP;
+            }
+        }
+        return sum;
     }
 
     private void explode() {

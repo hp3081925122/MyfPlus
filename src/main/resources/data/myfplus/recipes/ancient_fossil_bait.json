@@ -1,14 +1,25 @@
 {
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    { "item": "meetyourfight:fossil_bait" },
-    { "item": "meetyourfight:mossy_tooth" },
-    { "item": "minecraft:prismarine_shard" },
-    { "item": "minecraft:prismarine_shard" },
-    { "item": "minecraft:bone" },
-    { "item": "minecraft:bone" },
-    { "item": "minecraft:bone" },
-    { "item": "minecraft:bone" }
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "BTB",
+    "VFV",
+    "BTB"
   ],
-  "result": { "item": "myfplus:ancient_fossil_bait" }
+  "key": {
+    "B": {
+      "item": "minecraft:bone"
+    },
+    "T": {
+      "item": "meetyourfight:mossy_tooth"
+    },
+    "V": {
+      "item": "minecraft:vine"
+    },
+    "F": {
+      "item": "meetyourfight:fossil_bait"
+    }
+  },
+  "result": {
+    "item": "myfplus:ancient_fossil_bait"
+  }
 }

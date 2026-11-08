@@ -42,10 +42,6 @@ public class CorollaSkill extends RosaSkill {
             boss.playSound(SoundEvents.AMETHYST_BLOCK_CHIME, 1.5f, 0.8f + slot * 0.1f);
         }
         if (t == DURATION) {
-            b.act = 2;
-            b.invulnerable = false;
-            b.setPhase(2);
-            Fx.banner(boss.level(), at, Fx.BOSS_ROSALYNE, 2);
             FxEntity.at(boss.level(), FxType.RS_PETAL_BURST, at.add(0, 1.2, 0)).size(2.2f).spawn();
             Fx.shake(boss.level(), at, 0.6f);
             return true;
@@ -57,6 +53,6 @@ public class CorollaSkill extends RosaSkill {
     public void stop() {
         super.stop();
         b.invulnerable = false;
-        b.act = Math.max(b.act, 2);
+        if (b.act == 1) b.director.force(b.arena);
     }
 }

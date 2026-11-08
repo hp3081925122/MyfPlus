@@ -41,12 +41,12 @@ public class ArenaSkill extends RosaSkill {
             Fx.rockRing(boss.level(), c, r + 1, 0.6f);
             Fx.shake(boss.level(), c, 1.0f);
             boss.playSound(SoundEvents.ROOTED_DIRT_BREAK, 3.0f, 0.5f);
-            Fx.banner(boss.level(), c, Fx.BOSS_ROSALYNE, 3);
+            Fx.banner(boss.level(), c, Fx.BOSS_ROSALYNE, 2);
         }
         if (t == DURATION) {
-            b.act = 3;
+            b.act = 2;
             b.invulnerable = false;
-            b.setPhase(3);
+            b.setPhase(2);
             boss.setPhase(RosalyneEntity.PHASE_3);
             FxEntity.at(boss.level(), FxType.RS_PETAL_BURST, at.add(0, 1.2, 0)).size(3f).spawn();
             Fx.rockBurst(boss.level(), b.groundAt(at), 2f, 14);
@@ -61,9 +61,10 @@ public class ArenaSkill extends RosaSkill {
     public void stop() {
         super.stop();
         b.invulnerable = false;
-        if (b.act >= 2 && b.ring != null) {
-            b.act = 3;
-            b.boss.setPhase(RosalyneEntity.PHASE_3);
-        }
+        if (b.act >= 2) return;
+        if (b.ring == null) b.spawnRing(b.groundAt(at), MyfConfig.DUEL_RADIUS.get());
+        b.act = 2;
+        b.setPhase(2);
+        b.boss.setPhase(RosalyneEntity.PHASE_3);
     }
 }

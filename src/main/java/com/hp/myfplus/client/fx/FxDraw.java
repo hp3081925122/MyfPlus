@@ -76,6 +76,20 @@ public final class FxDraw {
         ps.popPose();
     }
 
+    public static void cylinder(PoseStack ps, VertexConsumer vc, float r, float h, int seg, int frame, int frames, int argb, int light) {
+        PoseStack.Pose p = ps.last();
+        float v0 = frame / (float) frames, v1 = (frame + 1) / (float) frames;
+        for (int i = 0; i < seg; i++) {
+            double a0 = Math.PI * 2 * i / seg, a1 = Math.PI * 2 * (i + 1) / seg;
+            float x0 = (float) (Math.cos(a0) * r), z0 = (float) (Math.sin(a0) * r);
+            float x1 = (float) (Math.cos(a1) * r), z1 = (float) (Math.sin(a1) * r);
+            vertex(vc, p, x0, 0, z0, 0, v1, argb, light);
+            vertex(vc, p, x0, h, z0, 0, v0, argb, light);
+            vertex(vc, p, x1, h, z1, 1, v0, argb, light);
+            vertex(vc, p, x1, 0, z1, 1, v1, argb, light);
+        }
+    }
+
     public static void strip(PoseStack ps, VertexConsumer vc, Vec3 a, Vec3 b, Vec3 camRel, float width, float tile, int argb, int light) {
         Vec3 d = b.subtract(a);
         double len = d.length();

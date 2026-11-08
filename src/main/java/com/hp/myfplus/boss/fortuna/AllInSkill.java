@@ -19,7 +19,6 @@ public class AllInSkill extends FortunaSkill {
     @Nullable
     private AllInEntity tower;
     private float need;
-    private int round;
 
     public AllInSkill(FortunaBrain b) {
         super(b, "all_in", -1, true);
@@ -28,9 +27,7 @@ public class AllInSkill extends FortunaSkill {
     @Override
     public void start(LivingEntity target) {
         DameFortunaEntity boss = b.boss;
-        round = Math.max(0, Math.min(2, (boss.getPhase() - 1) / 2));
-        double frac = round == 0 ? MyfConfig.ALL_IN_1.get() : round == 1 ? MyfConfig.ALL_IN_2.get() : MyfConfig.ALL_IN_3.get();
-        need = (float) (boss.getMaxHealth() * frac);
+        need = (float) (boss.getMaxHealth() * MyfConfig.ALL_IN.get());
         b.bet = 0;
         b.betting = true;
         AllInEntity e = new AllInEntity(MyfEntities.ALL_IN.get(), boss.level());
@@ -77,11 +74,9 @@ public class AllInSkill extends FortunaSkill {
         boss.playSound(SoundEvents.ANVIL_LAND, 1.5f, 1.2f);
         Fx.shake(boss.level(), boss.position(), 0.9f);
         Fx.rockBurst(boss.level(), b.groundAt(boss.position()), 3f, 14);
-        boss.progressShuffle();
-        if (boss.getPhase() != DameFortunaEntity.DEATH) {
-            b.breakArmor(200);
-            b.stunFor(40);
-        }
+        boss.setPhase(DameFortunaEntity.PHASE_3);
+        b.breakArmor(200);
+        b.stunFor(40);
     }
 
     private void lose(@Nullable LivingEntity target) {
@@ -90,14 +85,17 @@ public class AllInSkill extends FortunaSkill {
         Vec3 p = tower != null ? tower.position() : boss.position();
         FxEntity.at(boss.level(), FxType.FT_CROWN, p.add(0, 1.5, 0)).spawn();
         boss.playSound(SoundEvents.PLAYER_LEVELUP, 2.0f, 0.6f);
-        boss.setHealth(boss.getMaxHealth() * FortunaBrain.RESET[round]);
-        boss.setPhase(round * 2);
-        if (target != null) b.chipRain(target, 12);
+        boss.setPhase(DameFortunaEntity.PHASE_3);
+        if (target != null) {
+            b.chipRain(target, 12);
+            b.curse(target, 200);
+        }
     }
 
     @Override
     public void stop() {
         super.stop();
+        if (b.boss.isShuffling()) b.boss.setPhase(DameFortunaEntity.PHASE_3);
         b.betting = false;
         if (tower != null && !tower.isRemoved()) tower.discard();
         tower = null;

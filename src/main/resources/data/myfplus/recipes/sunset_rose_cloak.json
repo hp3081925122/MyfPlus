@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "Y Y",
+    " X "
+  ],
+  "key": {
+    "X": {
+      "item": "myfplus:sunset_rose"
+    },
+    "Y": {
+      "item": "meetyourfight:violet_bloom"
+    }
+  },
+  "result": {
+    "item": "myfplus:sunset_rose_cloak"
+  }
+}

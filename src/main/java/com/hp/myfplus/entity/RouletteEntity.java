@@ -1,14 +1,19 @@
 package com.hp.myfplus.entity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.hp.myfplus.core.Combat;
 import com.hp.myfplus.fx.Fx;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
+import com.hp.myfplus.registry.MyfEffects;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -26,6 +31,7 @@ public class RouletteEntity extends OwnedEntity {
     public int sector;
     public boolean resolved;
     private int lastClick = -1;
+    private final List<LivingEntity> bound = new ArrayList<>();
 
     public RouletteEntity(EntityType<? extends RouletteEntity> type, Level level) {
         super(type, level);
@@ -52,6 +58,8 @@ public class RouletteEntity extends OwnedEntity {
     public void tick() {
         super.tick();
         if (level().isClientSide || isRemoved()) return;
+        if (tickCount == 1) bind();
+        if (tickCount <= RESOLVE) confine();
         if (tickCount <= SPIN) {
             float a = ballAngle(tickCount);
             int s = sectorAt(Math.cos(a), Math.sin(a));
@@ -62,6 +70,46 @@ public class RouletteEntity extends OwnedEntity {
         }
         if (tickCount == SPIN) level().playSound(null, getX(), getY(), getZ(), SoundEvents.NOTE_BLOCK_BELL.get(), SoundSource.HOSTILE, 1.5f, color(sector) == GREEN ? 2.0f : 0.8f);
         if (tickCount == RESOLVE) resolve();
+    }
+
+    /** 转盘展开时站在盘面上的玩家都被禁锢，持续到结算。 */
+    private void bind() {
+        Mob boss = owner();
+        if (boss == null) return;
+        for (LivingEntity v : Combat.foes(boss, getBoundingBox().inflate(RADIUS, 3, RADIUS))) {
+            if (Combat.horizontalDist(v.position(), position()) > RADIUS || Math.abs(v.getY() - getY()) > 3) continue;
+            v.addEffect(new MobEffectInstance(MyfEffects.ROULETTE_BOUND.get(), RESOLVE + 6, 0, false, true, true), boss);
+            bound.add(v);
+        }
+    }
+
+    /** 被禁锢者贴近盘缘时抵消向外的速度并推回盘内；用末影珍珠等方式离开盘面 4 格以上视为脱身，解除禁锢。 */
+    private void confine() {
+        bound.removeIf(v -> !v.isAlive() || v.level() != level() || !v.hasEffect(MyfEffects.ROULETTE_BOUND.get()));
+        for (LivingEntity v : bound) {
+            double dx = v.getX() - getX(), dz = v.getZ() - getZ();
+            double dist = Math.sqrt(dx * dx + dz * dz);
+            if (dist < 0.01) continue;
+            if (dist > RADIUS + 4) {
+                v.removeEffect(MyfEffects.ROULETTE_BOUND.get());
+                continue;
+            }
+            double nx = dx / dist, nz = dz / dist;
+            Vec3 dm = v.getDeltaMovement();
+            double radial = dm.x * nx + dm.z * nz;
+            if (dist >= RADIUS - 0.8 && radial > -0.2) {
+                double pull = dist >= RADIUS ? 0.35 : 0.25;
+                v.setDeltaMovement(dm.x - nx * (radial + pull), dm.y, dm.z - nz * (radial + pull));
+                v.hurtMarked = true;
+            }
+        }
+    }
+
+    @Override
+    public void remove(RemovalReason reason) {
+        if (!level().isClientSide) for (LivingEntity v : bound) if (v.isAlive()) v.removeEffect(MyfEffects.ROULETTE_BOUND.get());
+        bound.clear();
+        super.remove(reason);
     }
 
     private void resolve() {

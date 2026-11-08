@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:entity",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:loot_table",
+          "name": "meetyourfight:entities/dame_fortuna"
+        }
+      ]
+    },
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "myfplus:house_gilded_die"
+        }
+      ]
+    }
+  ],
+  "random_sequence": "myfplus:entities/enhanced_dame_fortuna"
+}

@@ -11,12 +11,17 @@ import com.hp.myfplus.fx.Fx;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
 
+import com.hp.myfplus.registry.MyfEffects;
+import com.mojang.logging.LogUtils;
+
 import lykrast.meetyourfight.entity.RosalyneEntity;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 public class StanceSkill extends RosaSkill {
+    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
     private static final int WINDUP = 6;
     private final Set<Integer> hit = new HashSet<>();
     @Nullable
@@ -29,7 +34,7 @@ public class StanceSkill extends RosaSkill {
 
     @Override
     protected boolean usable(LivingEntity target, double dist) {
-        return dist <= 8;
+        return dist <= 8 && b.levelWith(target, 2.0);
     }
 
     @Override
@@ -44,7 +49,19 @@ public class StanceSkill extends RosaSkill {
         b.counterMelee = null;
         b.counterRanged = null;
         int w = MyfConfig.PARRY_WINDOW.get();
-        window = b.act >= 3 ? w * 3 / 4 : w;
+        window = b.act >= 2 ? w * 3 / 4 : w;
+        Vec3 here = b.boss.position();
+        Vec3 g = b.standAt(here.x, here.z, here.y);
+        if (g != null) b.place(g);
+    }
+
+    private void stun(LivingEntity foe) {
+        int ticks = MyfConfig.PARRY_STUN.get();
+        if (ticks <= 0) return;
+        foe.stopUsingItem();
+        foe.addEffect(new MobEffectInstance(MyfEffects.STUNNED.get(), ticks, 0, false, true, true), b.boss);
+        FxEntity.at(b.boss.level(), FxType.FT_STARS, foe.position()).follow(foe, 0, foe.getBbHeight() + 0.3, 0).life(ticks).spawn();
+        b.boss.playSound(SoundEvents.ANVIL_LAND, 1.2f, 1.6f);
     }
 
     @Override
@@ -68,6 +85,7 @@ public class StanceSkill extends RosaSkill {
                 if (target != null) b.face(Combat.yawTo(here, target.position()));
                 if (b.counterMelee != null) {
                     endParry();
+                    stun(b.counterMelee);
                     boss.playSound(SoundEvents.ANVIL_PLACE, 1.5f, 1.8f);
                     stage = 2;
                     st = 0;
@@ -96,7 +114,10 @@ public class StanceSkill extends RosaSkill {
                 if (st == 6) {
                     FxEntity.at(boss.level(), FxType.RS_GHOST, boss.position()).yaw(boss.yBodyRot).count(boss.getId()).spawn();
                     Vec3 back = Combat.dirFromYaw(foe.getYRot()).scale(-2.2);
-                    b.blink(new Vec3(foe.getX() + back.x, foe.getY() + 0.1, foe.getZ() + back.z));
+                    Vec3 to = b.standAt(foe.getX() + back.x, foe.getZ() + back.z, foe.getY());
+                    if (to == null) to = b.meleeSpot(foe, 2.2);
+                    if (to != null) b.blink(to);
+                    else LOGGER.debug("Rosalyne counter blink skipped: no standable spot near {}", foe.position());
                     b.face(Combat.yawTo(boss.position(), foe.position()));
                     boss.setAnimation(RosalyneEntity.ANIM_ARM_OUT_DN);
                 }

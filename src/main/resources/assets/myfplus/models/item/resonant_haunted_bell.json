@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "myfplus:item/resonant_haunted_bell"
+  }
+}

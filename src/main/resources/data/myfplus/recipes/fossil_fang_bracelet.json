@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "Y Y",
+    " X "
+  ],
+  "key": {
+    "X": {
+      "item": "myfplus:ancient_jawbone"
+    },
+    "Y": {
+      "item": "meetyourfight:mossy_tooth"
+    }
+  },
+  "result": {
+    "item": "myfplus:fossil_fang_bracelet"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "GPG",
+    "GHG",
+    "GPG"
+  ],
+  "key": {
+    "G": {
+      "item": "minecraft:gold_ingot"
+    },
+    "P": {
+      "item": "meetyourfight:phantoplasm"
+    },
+    "H": {
+      "item": "meetyourfight:haunted_bell"
+    }
+  },
+  "result": {
+    "item": "myfplus:resonant_haunted_bell"
+  }
+}

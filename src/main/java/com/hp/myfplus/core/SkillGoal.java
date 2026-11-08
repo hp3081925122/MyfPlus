@@ -46,6 +46,10 @@ public class SkillGoal extends Goal {
         return false;
     }
 
+    public void interrupt() {
+        if (current != null) finished = true;
+    }
+
     public boolean isRunning(BossSkill skill) {
         return current == skill;
     }

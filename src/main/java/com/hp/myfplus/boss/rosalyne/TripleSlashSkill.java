@@ -10,17 +10,30 @@ import com.hp.myfplus.fx.Fx;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
 
+import com.hp.myfplus.core.GroundProbe;
+import com.mojang.logging.LogUtils;
+
 import lykrast.meetyourfight.entity.RosalyneEntity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 
 public class TripleSlashSkill extends RosaSkill {
+    private static final org.slf4j.Logger LOGGER = LogUtils.getLogger();
     private final Set<Integer> hit = new HashSet<>();
+    @Nullable
+    private Vec3 spot;
+    private boolean blocked;
     private float yaw;
     private Vec3 dashFrom = Vec3.ZERO;
 
     public TripleSlashSkill(RosalyneBrain b) {
         super(b, "triple", 60);
+    }
+
+    @Override
+    protected void begin(LivingEntity target) {
+        spot = null;
+        blocked = false;
     }
 
     @Override
@@ -47,10 +60,24 @@ public class TripleSlashSkill extends RosaSkill {
         Vec3 ground = b.groundAt(here);
         switch (stage) {
             case 0 -> {
-                Vec3 f = target.position().subtract(here);
-                Vec3 to = target.position().subtract(new Vec3(f.x, 0, f.z).normalize().scale(2.5));
-                b.hover(to.x, target.getY() + 0.2, to.z, 0.9);
-                if (boss.distanceTo(target) < 3.6 || st >= 30) next();
+                if (st == 1 || st % 10 == 0) {
+                    Vec3 s = b.meleeSpot(target, 2.5);
+                    if (s != null) spot = s;
+                }
+                if (spot == null) {
+                    LOGGER.debug("Rosalyne triple slash skipped: no standable spot near target at {}", target.position());
+                    return true;
+                }
+                b.hover(spot.x, spot.y + 0.05, spot.z, 0.9);
+                if (here.distanceTo(spot) < 1.0) {
+                    b.place(spot);
+                    next();
+                }
+                else if (st >= 30) {
+                    LOGGER.debug("Rosalyne triple slash approach timed out at {}, blinking to {}", here, spot);
+                    b.blink(spot);
+                    next();
+                }
             }
             case 1 -> {
                 if (st == 1) {
@@ -93,6 +120,7 @@ public class TripleSlashSkill extends RosaSkill {
                 if (st == 1) {
                     lock(target);
                     dashFrom = here;
+                    blocked = false;
                     boss.setAnimation(RosalyneEntity.ANIM_PREPARE_DASH);
                     FxEntity.at(boss.level(), FxType.RS_GLINT, here.add(Combat.dirFromYaw(yaw).scale(1.2)).add(0, 1.3, 0)).spawn();
                     FxEntity.at(boss.level(), FxType.WARN_LINE, ground).yaw(yaw).line(6f, 1.5f).life(12).palette(3).spawn();
@@ -105,13 +133,22 @@ public class TripleSlashSkill extends RosaSkill {
                     Fx.rockLine(boss.level(), b.groundAt(dashFrom), yaw, 6f, 1.4f, 1.5f);
                     Fx.shake(boss.level(), dashFrom, 0.35f);
                 }
-                if (st >= 12 && st < 16) {
-                    Vec3 p = dashFrom.add(Combat.dirFromYaw(yaw).scale(1.5 * (st - 11)));
-                    b.place(p);
-                    b.hitSegment(dashFrom, p, 1.0, 0.9, 0.6, hit);
+                if (st >= 12 && st < 16 && !blocked) {
+                    Vec3 d = Combat.dirFromYaw(yaw);
+                    double x = here.x + d.x * 1.5, z = here.z + d.z * 1.5;
+                    double gy = GroundProbe.top(boss.level(), x, z, here.y + 1.2, 1, 3);
+                    Vec3 p = new Vec3(x, Double.isNaN(gy) ? here.y : gy, z);
+                    if (p.y - here.y > 1.1 || !b.fits(p)) {
+                        blocked = true;
+                        LOGGER.debug("Rosalyne dash stopped by terrain at {}", p);
+                    }
+                    else {
+                        b.place(p);
+                        b.hitSegment(here, p, 1.0, 0.9, 0.6, hit);
+                    }
                 }
                 if (st >= 22) {
-                    if (b.act >= 3 && b.now() >= b.stance.lastUsed + (long) (b.stance.cooldown * 0.7 * b.cfg.cooldown())) b.director.force(b.stance);
+                    if (b.act >= 2 && b.now() >= b.stance.lastUsed + (long) (b.stance.cooldown * 0.7 * b.cfg.cooldown())) b.director.force(b.stance);
                     return true;
                 }
             }

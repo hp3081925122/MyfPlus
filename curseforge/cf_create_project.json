@@ -1,0 +1,14 @@
+{
+  "name": "Meet Your Fight Plus",
+  "summary": "Enhanced versions of the four Meet Your Fight bosses with new movesets and pixel-art effects, summoned with items crafted from the original bosses' drops. Adds exclusive trophies and Curios accessories.",
+  "license": "All Rights Reserved",
+  "distribution": "Allow distribution to 3rd party",
+  "allowComments": true,
+  "dropdowns": [
+    ["Class", "Mods"],
+    ["Main category", "Mobs"],
+    ["Additional categories", "Adventure and RPG"]
+  ],
+  "description": "description.md",
+  "icon": "cf-project-icon.png"
+}

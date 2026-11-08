@@ -1,6 +1,7 @@
 package com.hp.myfplus.core;
 
 import com.hp.myfplus.Myfplus;
+import com.hp.myfplus.registry.MyfEffects;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
 import com.mojang.brigadier.arguments.FloatArgumentType;
@@ -24,8 +25,12 @@ import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingAttackEvent;
+import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
@@ -41,6 +46,47 @@ public final class CommonEvents {
         if (e.getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null && host.myfplus$brain().blocksAttack(e.getSource())) e.setCanceled(true);
     }
 
+    private static boolean stunned(net.minecraft.world.entity.Entity e) {
+        return e instanceof LivingEntity l && l.hasEffect(MyfEffects.STUNNED.get());
+    }
+
+    @SubscribeEvent
+    public static void onStunnedAttack(LivingAttackEvent e) {
+        if (stunned(e.getSource().getEntity()) && e.getSource().getDirectEntity() == e.getSource().getEntity()) e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onStunnedSwing(AttackEntityEvent e) {
+        if (stunned(e.getEntity())) e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onStunnedUseItem(PlayerInteractEvent.RightClickItem e) {
+        if (stunned(e.getEntity())) e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onStunnedUseBlock(PlayerInteractEvent.RightClickBlock e) {
+        if (stunned(e.getEntity())) e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onStunnedHitBlock(PlayerInteractEvent.LeftClickBlock e) {
+        if (stunned(e.getEntity())) e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onStunnedUseEntity(PlayerInteractEvent.EntityInteract e) {
+        if (stunned(e.getEntity())) e.setCanceled(true);
+    }
+
+    @SubscribeEvent
+    public static void onStunnedJump(LivingEvent.LivingJumpEvent e) {
+        if (!stunned(e.getEntity())) return;
+        Vec3 dm = e.getEntity().getDeltaMovement();
+        e.getEntity().setDeltaMovement(dm.x, Math.min(0, dm.y), dm.z);
+    }
+
     @SubscribeEvent
     public static void onImpact(ProjectileImpactEvent e) {
         if (e.getProjectile().level().isClientSide || !(e.getRayTraceResult() instanceof EntityHitResult hit)) return;
@@ -54,6 +100,13 @@ public final class CommonEvents {
         if (e.getSource().getEntity() instanceof MyfBossHost host && host.myfplus$brain() != null) e.setAmount(host.myfplus$brain().onDealDamage(e.getEntity(), e.getAmount()));
     }
 
+    @SubscribeEvent(priority = EventPriority.LOWEST)
+    public static void onDamage(LivingDamageEvent e) {
+        LivingEntity boss = e.getEntity();
+        if (!(boss instanceof MyfBossHost host) || host.myfplus$brain() == null || e.getAmount() < boss.getHealth()) return;
+        if (host.myfplus$brain().interceptLethal(e.getSource())) e.setAmount(0);
+    }
+
     @SubscribeEvent
     public static void onLivingTick(LivingEvent.LivingTickEvent e) {
         if (e.getEntity().level().isClientSide) return;
@@ -62,7 +115,7 @@ public final class CommonEvents {
 
     @SubscribeEvent
     public static void onJoin(EntityJoinLevelEvent e) {
-        if (e.getLevel().isClientSide() || !(e.getEntity() instanceof Mob mob)) return;
+        if (e.getLevel().isClientSide() || !(e.getEntity() instanceof Mob mob) || !(mob instanceof MyfBossHost)) return;
         double base;
         if (mob instanceof BellringerEntity) base = BellringerEntity.DMG * MYFConfigValues.BELLRINGER_DMG_MULT;
         else if (mob instanceof DameFortunaEntity) base = DameFortunaEntity.DMG * MYFConfigValues.FORTUNA_DMG_MULT;

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    " X ",
+    "Y Y",
+    " X "
+  ],
+  "key": {
+    "X": {
+      "item": "myfplus:house_gilded_die"
+    },
+    "Y": {
+      "item": "meetyourfight:fortunes_favor"
+    }
+  },
+  "result": {
+    "item": "myfplus:house_die_ring"
+  }
+}

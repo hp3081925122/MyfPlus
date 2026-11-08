@@ -5,6 +5,7 @@ import javax.annotation.Nullable;
 import com.hp.myfplus.config.MyfConfig;
 
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
@@ -40,6 +41,22 @@ public abstract class BossBrain<T extends Mob> {
     }
 
     public abstract int globalGap();
+
+    public boolean firstPhase() {
+        return false;
+    }
+
+    protected void enterSecondPhase() {
+    }
+
+    /** 一阶段受到致命伤时不死，回满血并转入二阶段；/kill、虚空等无视无敌的伤害照常致死。 */
+    public final boolean interceptLethal(DamageSource source) {
+        if (source.is(DamageTypeTags.BYPASSES_INVULNERABILITY) || !firstPhase()) return false;
+        boss.setHealth(boss.getMaxHealth());
+        director.interrupt();
+        enterSecondPhase();
+        return true;
+    }
 
     public void serverTick() {
     }

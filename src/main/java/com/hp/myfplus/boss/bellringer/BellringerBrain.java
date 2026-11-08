@@ -2,7 +2,6 @@ package com.hp.myfplus.boss.bellringer;
 
 import javax.annotation.Nullable;
 
-import com.hp.myfplus.boss.swampjaw.SwampjawBrain;
 import com.hp.myfplus.config.MyfConfig;
 import com.hp.myfplus.core.BossBrain;
 import com.hp.myfplus.core.Combat;
@@ -18,7 +17,10 @@ import com.hp.myfplus.registry.MyfEntities;
 import lykrast.meetyourfight.entity.BellringerEntity;
 import lykrast.meetyourfight.entity.ai.MoveFrontOfTarget;
 import lykrast.meetyourfight.entity.ai.VexMoveRandomGoal;
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
@@ -31,13 +33,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec3;
 
 public class BellringerBrain extends BossBrain<BellringerEntity> {
-    public static final int SKILL_HIDDEN = SwampjawBrain.SKILL_SUBMERGED;
     private static final float[] PITCH = {1.0f, 1.19f, 1.33f, 1.5f};
 
     public final TollSkill toll;
     public final EchoSkill echo;
     public final KnellSkill knell;
-    public final HushSkill hush;
+    public final ScaleSkill scale;
     public final ResonanceSkill resonance;
     public final GrandTollSkill grandToll;
 
@@ -48,8 +49,6 @@ public class BellringerBrain extends BossBrain<BellringerEntity> {
     public boolean phase2;
     private boolean transitionQueued;
     private boolean introDone;
-    public boolean hidden;
-    public boolean revealRequested;
     public boolean invulnerable;
     public int exhausted;
 
@@ -58,7 +57,7 @@ public class BellringerBrain extends BossBrain<BellringerEntity> {
         toll = director.add(new TollSkill(this));
         echo = director.add(new EchoSkill(this));
         knell = director.add(new KnellSkill(this));
-        hush = director.add(new HushSkill(this));
+        scale = director.add(new ScaleSkill(this));
         resonance = director.add(new ResonanceSkill(this));
         grandToll = director.add(new GrandTollSkill(this));
     }
@@ -99,10 +98,17 @@ public class BellringerBrain extends BossBrain<BellringerEntity> {
             FxEntity.at(boss.level(), FxType.BR_NOTE, boss.position()).follow(boss, 0, boss.getBbHeight() + 0.9, 0).spawn();
             boss.playSound(SoundEvents.NOTE_BLOCK_BELL.get(), 1.0f, PITCH[beatCount & 3]);
         }
-        if (!phase2 && !transitionQueued && hpRatio() < 0.5f) {
-            transitionQueued = true;
-            director.force(resonance);
-        }
+    }
+
+    @Override
+    public boolean firstPhase() {
+        return !phase2 && !transitionQueued;
+    }
+
+    @Override
+    protected void enterSecondPhase() {
+        transitionQueued = true;
+        director.force(resonance);
     }
 
     public void forceBeat() {
@@ -116,13 +122,12 @@ public class BellringerBrain extends BossBrain<BellringerEntity> {
 
     @Override
     public float onHurt(DamageSource source, float amount) {
-        if (hidden) revealRequested = true;
         return exhausted > 0 ? amount * 1.4f : amount;
     }
 
     @Override
     public void save(CompoundTag tag) {
-        tag.putBoolean("phase2", phase2);
+        tag.putBoolean("phase2", phase2 || transitionQueued);
         tag.putBoolean("intro", introDone);
     }
 
@@ -177,6 +182,12 @@ public class BellringerBrain extends BossBrain<BellringerEntity> {
         if (target == null) return null;
         FxType t = n >= 3 ? FxType.BR_COUNT3 : n == 2 ? FxType.BR_COUNT2 : FxType.BR_COUNT1;
         target.playSound(SoundEvents.NOTE_BLOCK_CHIME.get(), 1.0f, 0.5f + 0.25f * (3 - n));
+        if (target instanceof ServerPlayer sp) {
+            String num = n >= 3 ? "III" : n == 2 ? "II" : "I";
+            sp.displayClientMessage(Component.translatable("message.myfplus.knell", Component.literal(num).withStyle(ChatFormatting.GOLD, ChatFormatting.BOLD)).withStyle(ChatFormatting.AQUA), true);
+            sp.playNotifySound(SoundEvents.BELL_BLOCK, boss.getSoundSource(), 0.8f, 1.4f + 0.2f * (3 - n));
+        }
+        FxEntity.at(boss.level(), FxType.WARN_CIRCLE, groundAt(target.position())).size(PhantomBellEntity.RADIUS).life(interval()).palette(1).spawn();
         return FxEntity.at(boss.level(), t, target.position()).follow(target, 0, target.getBbHeight() + 0.8, 0).life(interval()).spawn();
     }
 }

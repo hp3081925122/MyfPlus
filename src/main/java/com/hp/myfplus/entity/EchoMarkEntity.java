@@ -23,9 +23,9 @@ public class EchoMarkEntity extends OwnedEntity {
         super(type, level);
     }
 
-    public void setup(int interval) {
-        this.interval = interval;
-        this.life = interval * BEATS;
+    public void setup(int fuse) {
+        this.interval = Math.max(1, fuse / BEATS);
+        this.life = fuse;
     }
 
     public int stage(float age) {
@@ -36,7 +36,7 @@ public class EchoMarkEntity extends OwnedEntity {
     protected void expire() {
         Mob boss = owner();
         level().playSound(null, getX(), getY(), getZ(), SoundEvents.BELL_BLOCK, SoundSource.HOSTILE, 1.6f, 1.6f);
-        FxEntity.at(level(), FxType.BR_PILLAR, position()).spawn();
+        FxEntity.at(level(), FxType.BR_PILLAR, position()).size(radius).spawn();
         FxEntity.at(level(), FxType.BR_IMPACT, position()).size(radius * 2.2f).spawn();
         Fx.shake(level(), position(), 0.3f);
         if (boss != null) {

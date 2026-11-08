@@ -28,7 +28,7 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
     public final SwampjawFlight flight;
     public final BreachSkill breach;
     public final GroundJawSkill groundJaw;
-    public final BreathSkill breath;
+    public final BoneRainSkill boneRain;
     public final FinStormSkill fins;
     public final TailSkill tail;
     public final AwakenSkill awaken;
@@ -46,7 +46,7 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
         flight = new SwampjawFlight(fish);
         breach = director.add(new BreachSkill(this));
         groundJaw = director.add(new GroundJawSkill(this));
-        breath = director.add(new BreathSkill(this));
+        boneRain = director.add(new BoneRainSkill(this));
         fins = director.add(new FinStormSkill(this));
         tail = director.add(new TailSkill(this));
         awaken = director.add(new AwakenSkill(this));
@@ -74,10 +74,17 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
             introDone = true;
             Fx.banner(boss.level(), boss.position(), Fx.BOSS_SWAMPJAW, 1);
         }
-        if (!phase2 && !transitionQueued && hpRatio() < 0.5f) {
-            transitionQueued = true;
-            director.force(awaken);
-        }
+    }
+
+    @Override
+    public boolean firstPhase() {
+        return !phase2 && !transitionQueued;
+    }
+
+    @Override
+    protected void enterSecondPhase() {
+        transitionQueued = true;
+        director.force(awaken);
     }
 
     @Override
@@ -110,7 +117,7 @@ public class SwampjawBrain extends BossBrain<SwampjawEntity> {
 
     @Override
     public void save(CompoundTag tag) {
-        tag.putBoolean("phase2", phase2);
+        tag.putBoolean("phase2", phase2 || transitionQueued);
         tag.putBoolean("intro", introDone);
         if (center != null) {
             tag.putDouble("cx", center.x);

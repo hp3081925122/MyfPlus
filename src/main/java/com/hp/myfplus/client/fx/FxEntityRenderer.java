@@ -1,9 +1,6 @@
 package com.hp.myfplus.client.fx;
 
-import com.hp.myfplus.boss.swampjaw.SwampjawBrain;
 import com.hp.myfplus.config.MyfConfig;
-import com.hp.myfplus.core.Combat;
-import com.hp.myfplus.core.GroundProbe;
 import com.hp.myfplus.fx.FxEntity;
 import com.hp.myfplus.fx.FxType;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -22,9 +19,6 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
 
 public class FxEntityRenderer extends EntityRenderer<FxEntity> {
     private static final float[] SHRINK = {1f, 0.75f, 0.5f, 0.375f};
@@ -69,24 +63,6 @@ public class FxEntityRenderer extends EntityRenderer<FxEntity> {
         VertexConsumer vc = new TintedConsumer(buf.getBuffer(RenderType.entityTranslucent(r.getTextureLocation(src))), 0.54f, 0.29f, 0.72f, a);
         model.renderToBuffer(ps, vc, FxDraw.FULL, OverlayTexture.NO_OVERLAY, 0.54f, 0.29f, 0.72f, a);
         ps.popPose();
-    }
-
-    /** 从跟随实体的嘴部射向地面的光束；yaw 为扫射中心，width 为带符号的扫射角，size 为射程。 */
-    private void beam(FxEntity e, float age, float partial, PoseStack ps, MultiBufferSource buf, int color) {
-        Entity src = e.level().getEntity(e.follow);
-        if (src == null) return;
-        float k = Mth.clamp(age / Math.max(1, e.life), 0f, 1f);
-        Vec3 dir = Combat.dirFromYaw(e.getYRot() + e.width * (k - 0.5f));
-        Vec3 base = e.getPosition(partial);
-        Vec3 from = src.getPosition(partial);
-        double ex = from.x + dir.x * e.size, ez = from.z + dir.z * e.size;
-        double ey = GroundProbe.under(e.level(), ex, ez, from.y);
-        Vec3 mouth = SwampjawBrain.mouth(src, partial).subtract(base);
-        Vec3 end = new Vec3(ex, ey + 0.1, ez).subtract(base);
-        Vec3 cam = entityRenderDispatcher.camera.getPosition().subtract(base);
-        FxType t = e.fx;
-        String tex = t.texture + FxDraw.frame(t.frames, t.ticksPerFrame, true, age);
-        FxDraw.strip(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(tex))), mouth, end, cam, t.width, 1f, color, FxDraw.FULL);
     }
 
     @Override
@@ -143,17 +119,25 @@ public class FxEntityRenderer extends EntityRenderer<FxEntity> {
                 float k = Math.min(1f, age / 8f);
                 float a = Math.max(0f, Math.min(1f, (e.life - age) / 6f));
                 ps.pushPose();
-                ps.translate(0, 12f * (1 - k) * (1 - k), 0);
+                ps.translate(0, 12f * (1 - k) * (1 - k) + (float) e.offY, 0);
                 FxDraw.vbillboard(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture))), entityRenderDispatcher.camera.getYRot(), t.width * e.size, t.height * e.size,
                         Math.floorMod(e.count, t.frames), t.frames, FxDraw.alpha(0xFFFFFF, a), lt);
                 ps.popPose();
+            }
+            case COLUMN -> {
+                int f = FxDraw.frame(t.frames, t.ticksPerFrame, t.loop, age);
+                float k = Math.min(1f, age / 3f);
+                float r = t.width * e.size / 2 * (0.8f + 0.35f * age / Math.max(1, e.life));
+                float h = t.height * e.size * (0.35f + 0.65f * k);
+                VertexConsumer vc = buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture)));
+                FxDraw.cylinder(ps, vc, r, h, 14, f, t.frames, color, lt);
+                FxDraw.cylinder(ps, vc, r * 0.45f, h * 1.15f, 8, Math.min(t.frames - 1, f + 1), t.frames, color, lt);
             }
             case VBILL -> {
                 int f = FxDraw.frame(t.frames, t.ticksPerFrame, t.loop, age);
                 FxDraw.vbillboard(ps, buf.getBuffer(FxDraw.type(FxDraw.tex(t.texture))), entityRenderDispatcher.camera.getYRot(), t.width * e.size, t.height * e.size, f, t.frames, color, lt);
             }
             case GHOST -> ghost(e, age, partial, ps, buf, light);
-            case BEAM -> beam(e, age, partial, ps, buf, color);
             default -> {
             }
         }
