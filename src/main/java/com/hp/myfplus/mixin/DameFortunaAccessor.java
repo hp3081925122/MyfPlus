@@ -15,7 +15,4 @@ public interface DameFortunaAccessor {
 
     @Accessor(value = "nextAttack", remap = false)
     void myfplus$setNextAttack(int value);
-
-    @Accessor(value = "phase", remap = false)
-    void myfplus$setPhaseField(int value);
 }

@@ -9,6 +9,7 @@ import com.hp.myfplus.core.Shots;
 import com.hp.myfplus.core.SkillRunner;
 import com.hp.myfplus.mixin.DameFortunaAccessor;
 import com.hp.myfplus.registry.MyfEntities;
+import com.mojang.logging.LogUtils;
 
 import lykrast.meetyourfight.entity.DameFortunaEntity;
 import lykrast.meetyourfight.registry.MYFSounds;
@@ -89,11 +90,21 @@ public class EnhancedFortunaEntity extends DameFortunaEntity implements Enhanced
     }
 
     @Override
+    public boolean myfplus$lethalPhase2() {
+        return false;
+    }
+
+    @Override
+    public void progressShuffle() {
+        boolean first = getPhase() == SHUFFLE_1;
+        super.progressShuffle();
+        if (first && !phase2 && myfplus$cfg().phase2()) myfplus$enterPhase2();
+    }
+
+    @Override
     public void myfplus$enterPhase2() {
         phase2 = true;
-        setPhase(PHASE_3);
-        acc().myfplus$setPhaseField(PHASE_3);
-        setAnimation(ANIM_IDLE);
+        LogUtils.getLogger().debug("Enhanced Dame Fortuna enters phase 2 after the first shuffle");
         acc().myfplus$setAttackCooldown(40);
         addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, 40, 4));
         playSound(MYFSounds.dameFortunaClap.get(), 3.0f, 0.8f);

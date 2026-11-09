@@ -115,7 +115,7 @@ public final class CommonEvents {
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public static void onDamage(LivingDamageEvent e) {
         LivingEntity v = e.getEntity();
-        if (!(v instanceof EnhancedBoss boss) || boss.myfplus$phase2() || !boss.myfplus$cfg().phase2()) return;
+        if (!(v instanceof EnhancedBoss boss) || !boss.myfplus$lethalPhase2() || boss.myfplus$phase2() || !boss.myfplus$cfg().phase2()) return;
         if (e.getAmount() < v.getHealth() || e.getSource().is(DamageTypeTags.BYPASSES_INVULNERABILITY)) return;
         e.setAmount(0);
         v.setHealth(v.getMaxHealth());

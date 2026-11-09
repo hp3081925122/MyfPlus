@@ -8,7 +8,6 @@
     "BellringerBurstMixin",
     "BellringerRageMixin",
     "DameFortunaAccessor",
-    "DameFortunaEntityMixin",
     "FortunaDiceMixin",
     "FortunaSpinMixin",
     "RosalyneAccessor",

@@ -6,7 +6,7 @@ Requires **Meet Your Fight** and **Curios API**.
 
 ## Enhanced bosses
 
-Every enhanced boss has two phases. When its health runs out in phase 1, it refills its health and enters phase 2, where it attacks even more often and unlocks extra skills. It only dies when phase 2 is emptied. Skill damage scales with the boss's attack damage.
+Every enhanced boss has two phases. When its health runs out in phase 1, it refills its health and enters phase 2, where it attacks even more often and unlocks extra skills. It only dies when phase 2 is emptied. Dame Fortuna is the exception: see below. Skill damage scales with the boss's attack damage.
 
 ### Ancient Swampjaw
 
@@ -22,9 +22,9 @@ Every enhanced boss has two phases. When its health runs out in phase 1, it refi
 
 ### High-Roller Dame Fortuna
 
-*   Throws more dice, spins faster and scatters chips more often. The card shuffle is kept in phase 1.
+*   Twice the original health. Throws more dice, spins faster and scatters chips more often. All three card shuffles are kept; guessing the first shuffle correctly sends her into phase 2.
 *   Pincer Dice, Chip Rain and Raise Dash (two fast passes leaving dice bombs behind).
-*   Phase 2 (no more shuffles): Royal Flush (a grid of homing chips) and All-In (a ring of dice bombs).
+*   Phase 2: Royal Flush (a grid of homing chips) and All-In (a ring of dice bombs).
 
 ### Rosalyne, Blade of Sunset
 
@@ -72,7 +72,7 @@ Source: https://github.com/hp3081925122/MyfPlus
 
 ## 强化 Boss
 
-每个强化 Boss 都有两个阶段。一阶段生命耗尽时会回满血进入二阶段，攻击更频繁并解锁额外技能，二阶段血量打空才会死亡。技能伤害随 Boss 攻击力变化。
+每个强化 Boss 都有两个阶段。一阶段生命耗尽时会回满血进入二阶段，攻击更频繁并解锁额外技能，二阶段血量打空才会死亡。命运女爵例外，见下文。技能伤害随 Boss 攻击力变化。
 
 ### 远古沼泽巨颌怪
 
@@ -88,9 +88,9 @@ Source: https://github.com/hp3081925122/MyfPlus
 
 ### 豪赌福尔图娜女爵
 
-*   骰子更多、旋转更快、撒筹码更密。一阶段保留洗牌找牌。
+*   血量是本体的两倍。骰子更多、旋转更快、撒筹码更密。保留本体全部三次洗牌找牌，第一次猜对就进入二阶段。
 *   夹击骰、筹码雨、加注冲刺（两次高速穿过你并沿路留下骰子炸弹）。
-*   二阶段（不再洗牌）：同花顺（一排排追踪筹码）、梭哈（一圈骰子炸弹）。
+*   二阶段：同花顺（一排排追踪筹码）、梭哈（一圈骰子炸弹）。
 
 ### 落日之锋，罗莎琳
 

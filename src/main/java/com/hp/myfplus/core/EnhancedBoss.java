@@ -8,4 +8,8 @@ public interface EnhancedBoss {
     boolean myfplus$phase2();
 
     void myfplus$enterPhase2();
+
+    default boolean myfplus$lethalPhase2() {
+        return true;
+    }
 }

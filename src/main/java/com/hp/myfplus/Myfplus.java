@@ -34,7 +34,7 @@ public final class Myfplus {
     private static void attributes(EntityAttributeCreationEvent e) {
         e.put(MyfEntities.ENHANCED_SWAMPJAW.get(), SwampjawEntity.createAttributes().build());
         e.put(MyfEntities.ENHANCED_BELLRINGER.get(), BellringerEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 10).build());
-        e.put(MyfEntities.ENHANCED_FORTUNA.get(), DameFortunaEntity.createAttributes().add(Attributes.ATTACK_DAMAGE, 16).build());
+        e.put(MyfEntities.ENHANCED_FORTUNA.get(), DameFortunaEntity.createAttributes().add(Attributes.MAX_HEALTH, DameFortunaEntity.HP * 2).add(Attributes.ATTACK_DAMAGE, 16).build());
         e.put(MyfEntities.ENHANCED_ROSALYNE.get(), RosalyneEntity.createAttributes().build());
     }
 }
